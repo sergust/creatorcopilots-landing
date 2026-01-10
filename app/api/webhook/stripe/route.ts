@@ -1,24 +1,33 @@
 import { NextResponse, NextRequest } from "next/server";
 import { headers } from "next/headers";
 import Stripe from "stripe";
-import connectMongo from "@/libs/mongoose";
+import { clerkClient } from "@clerk/nextjs/server";
 import configFile from "@/config";
-import User from "@/models/User";
 import { findCheckoutSession } from "@/libs/stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2023-08-16",
+const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2025-12-15.clover",
   typescript: true,
 });
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+// Helper function to find a Clerk user by Stripe customer ID
+async function findUserByStripeCustomerId(customerId: string) {
+  const client = await clerkClient();
+  // Search through users to find one with matching stripeCustomerId in metadata
+  // Note: For production, you might want to maintain a separate mapping or use Clerk's user search
+  const users = await client.users.getUserList({ limit: 100 });
+  return users.data.find(
+    (user) => (user.publicMetadata as { stripeCustomerId?: string })?.stripeCustomerId === customerId
+  );
+}
 
 // This is where we receive Stripe webhook events
 // It's used to update user data, send emails, etc...
-// By default, it'll store the user in the database
+// User data is stored in Clerk metadata
 // See more: https://shipfa.st/docs/features/payments
 export async function POST(req: NextRequest) {
-  await connectMongo();
-
+  const stripe = getStripe();
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
   const body = await req.text();
 
   const signature = (await headers()).get("stripe-signature");
@@ -28,10 +37,11 @@ export async function POST(req: NextRequest) {
 
   // verify Stripe event is legit
   try {
-    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-  } catch (err) {
-    console.error(`Webhook signature verification failed. ${err.message}`);
-    return NextResponse.json({ error: err.message }, { status: 400 });
+    event = stripe.webhooks.constructEvent(body, signature!, webhookSecret);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error(`Webhook signature verification failed. ${message}`);
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 
   eventType = event.type;
@@ -46,43 +56,24 @@ export async function POST(req: NextRequest) {
 
         const session = await findCheckoutSession(stripeObject.id);
 
-        const customerId = session?.customer;
-        const priceId = session?.line_items?.data[0]?.price.id;
+        const customerId = session?.customer as string;
+        const priceId = session?.line_items?.data[0]?.price?.id;
         const userId = stripeObject.client_reference_id;
         const plan = configFile.stripe.plans.find((p) => p.priceId === priceId);
 
         if (!plan) break;
 
-        const customer = (await stripe.customers.retrieve(
-          customerId as string
-        )) as Stripe.Customer;
-
-        let user;
-
-        // Get or create the user. userId is normally passed in the checkout session (clientReferenceID) to identify the user when we get the webhook event
+        // userId is the Clerk user ID passed in the checkout session (clientReferenceID)
         if (userId) {
-          user = await User.findById(userId);
-        } else if (customer.email) {
-          user = await User.findOne({ email: customer.email });
-
-          if (!user) {
-            user = await User.create({
-              email: customer.email,
-              name: customer.name,
-            });
-
-            await user.save();
-          }
-        } else {
-          console.error("No user found");
-          throw new Error("No user found");
+          const client = await clerkClient();
+          await client.users.updateUser(userId, {
+            publicMetadata: {
+              stripeCustomerId: customerId,
+              stripePriceId: priceId,
+              hasAccess: true,
+            },
+          });
         }
-
-        // Update user data + Grant user access to your product. It's a boolean in the database, but could be a number of credits, etc...
-        user.priceId = priceId;
-        user.customerId = customerId;
-        user.hasAccess = true;
-        await user.save();
 
         // Extra: send email with user link, product page, etc...
         // try {
@@ -116,11 +107,19 @@ export async function POST(req: NextRequest) {
         const subscription = await stripe.subscriptions.retrieve(
           stripeObject.id
         );
-        const user = await User.findOne({ customerId: subscription.customer });
 
-        // Revoke access to your product
-        user.hasAccess = false;
-        await user.save();
+        const user = await findUserByStripeCustomerId(subscription.customer as string);
+
+        if (user) {
+          const client = await clerkClient();
+          // Revoke access to your product
+          await client.users.updateUser(user.id, {
+            publicMetadata: {
+              ...user.publicMetadata,
+              hasAccess: false,
+            },
+          });
+        }
 
         break;
       }
@@ -132,17 +131,28 @@ export async function POST(req: NextRequest) {
         const stripeObject: Stripe.Invoice = event.data
           .object as Stripe.Invoice;
 
-        const priceId = stripeObject.lines.data[0].price.id;
-        const customerId = stripeObject.customer;
+        const lineItem = stripeObject.lines.data[0];
+        const priceId = typeof lineItem.pricing?.price_details?.price === 'string'
+          ? lineItem.pricing.price_details.price
+          : lineItem.pricing?.price_details?.price?.id;
+        const customerId = stripeObject.customer as string;
 
-        const user = await User.findOne({ customerId });
+        const user = await findUserByStripeCustomerId(customerId);
 
-        // Make sure the invoice is for the same plan (priceId) the user subscribed to
-        if (user.priceId !== priceId) break;
+        if (user) {
+          const userPriceId = (user.publicMetadata as { stripePriceId?: string })?.stripePriceId;
+          // Make sure the invoice is for the same plan (priceId) the user subscribed to
+          if (userPriceId !== priceId) break;
 
-        // Grant user access to your product. It's a boolean in the database, but could be a number of credits, etc...
-        user.hasAccess = true;
-        await user.save();
+          const client = await clerkClient();
+          // Grant user access to your product
+          await client.users.updateUser(user.id, {
+            publicMetadata: {
+              ...user.publicMetadata,
+              hasAccess: true,
+            },
+          });
+        }
 
         break;
       }
@@ -160,7 +170,7 @@ export async function POST(req: NextRequest) {
       // Unhandled event type
     }
   } catch (e) {
-    console.error("stripe error: ", e.message);
+    console.error("stripe error: ", (e as Error).message);
   }
 
   return NextResponse.json({});

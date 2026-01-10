@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Inter } from "next/font/google";
 import { Viewport } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import { getSEOTags } from "@/libs/seo";
 import ClientLayout from "@/components/LayoutClient";
 import config from "@/config";
@@ -21,15 +22,17 @@ export const metadata = getSEOTags();
 
 export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
-		<html
-			lang="en"
-			data-theme={config.colors.theme}
-			className={font.className}
-		>
-			<body>
-				{/* ClientLayout contains all the client wrappers (Crisp chat support, toast messages, tooltips, etc.) */}
-				<ClientLayout>{children}</ClientLayout>
-			</body>
-		</html>
+		<ClerkProvider>
+			<html
+				lang="en"
+				data-theme={config.colors.theme}
+				className={font.className}
+			>
+				<body>
+					{/* ClientLayout contains all the client wrappers (Crisp chat support, toast messages, tooltips, etc.) */}
+					<ClientLayout>{children}</ClientLayout>
+				</body>
+			</html>
+		</ClerkProvider>
 	);
 }

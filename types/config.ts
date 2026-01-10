@@ -61,4 +61,17 @@ export interface ConfigProps {
     loginUrl: string;
     callbackUrl: string;
   };
+  polar?: {
+    plans: {
+      isFeatured?: boolean;
+      productId: string;
+      name: string;
+      description?: string;
+      price: number;
+      priceAnchor?: number;
+      features: {
+        name: string;
+      }[];
+    }[];
+  };
 }

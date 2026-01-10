@@ -1,23 +1,18 @@
 import { NextResponse, NextRequest } from "next/server";
-import { auth } from "@/libs/next-auth";
-import connectMongo from "@/libs/mongoose";
+import { currentUser } from "@clerk/nextjs/server";
 import { createCustomerPortal } from "@/libs/stripe";
-import User from "@/models/User";
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
+  const clerkUser = await currentUser();
 
-  if (session) {
+  if (clerkUser) {
     try {
-      await connectMongo();
-
       const body = await req.json();
 
-      const { id } = session.user;
+      // Get Stripe customerId from Clerk metadata
+      const customerId = (clerkUser.publicMetadata as { stripeCustomerId?: string })?.stripeCustomerId;
 
-      const user = id ? await User.findById(String(id)) : null;
-
-      if (!user?.customerId) {
+      if (!customerId) {
         return NextResponse.json(
           {
             error:
@@ -33,7 +28,7 @@ export async function POST(req: NextRequest) {
       }
 
       const stripePortalUrl = await createCustomerPortal({
-        customerId: user.customerId,
+        customerId,
         returnUrl: body.returnUrl,
       });
 
@@ -42,7 +37,7 @@ export async function POST(req: NextRequest) {
       });
     } catch (e) {
       console.error(e);
-      return NextResponse.json({ error: e?.message }, { status: 500 });
+      return NextResponse.json({ error: (e as Error)?.message }, { status: 500 });
     }
   } else {
     // Not Signed in

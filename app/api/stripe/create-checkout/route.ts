@@ -1,8 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
-import { auth } from "@/libs/next-auth";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { createCheckout } from "@/libs/stripe";
-import connectMongo from "@/libs/mongoose";
-import User from "@/models/User";
 
 // This function is used to create a Stripe Checkout Session (one-time payment or subscription)
 // It's called by the <ButtonCheckout /> component
@@ -31,17 +29,20 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const session = await auth();
-
-    await connectMongo();
+    const { userId } = await auth();
+    const clerkUser = userId ? await currentUser() : null;
 
     const { priceId, mode, successUrl, cancelUrl } = body;
-    
-    let user = null;
-    if (session?.user?.id) {
-      const { id } = session.user;
-      user = await User.findById(String(id));
-    }
+
+    // Get user data from Clerk for prefilling checkout
+    const user = clerkUser
+      ? {
+          email: clerkUser.emailAddresses?.[0]?.emailAddress,
+          name: clerkUser.firstName,
+          // Get Stripe customerId from Clerk metadata if it exists
+          customerId: (clerkUser.publicMetadata as { stripeCustomerId?: string })?.stripeCustomerId,
+        }
+      : null;
 
     const stripeSessionURL = await createCheckout({
       priceId,
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest) {
       successUrl,
       cancelUrl,
       // If user is logged in, it will pass the user ID to the Stripe Session so it can be retrieved in the webhook later
-      clientReferenceId: user?._id?.toString(),
+      clientReferenceId: userId || undefined,
       // If user is logged in, this will automatically prefill Checkout data like email and/or credit card for faster checkout
       user,
       // If you send coupons from the frontend, you can pass it here
@@ -59,6 +60,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url: stripeSessionURL });
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ error: e?.message }, { status: 500 });
+    return NextResponse.json({ error: (e as Error)?.message }, { status: 500 });
   }
 }

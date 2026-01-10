@@ -94,9 +94,31 @@ const config = {
   },
   auth: {
     // REQUIRED — the path to log in users. It's use to protect private routes (like /dashboard). It's used in apiClient (/libs/api.js) upon 401 errors from our API
-    loginUrl: "/api/auth/signin",
+    loginUrl: "/sign-in",
     // REQUIRED — the path you want to redirect users to after a successful login (i.e. /dashboard, /private). This is normally a private page for users to manage their accounts. It's used in apiClient (/libs/api.js) upon 401 errors from our API & in ButtonSignin.js
     callbackUrl: "/dashboard",
+  },
+  polar: {
+    // Create products in your Polar dashboard, then add them here
+    // Use sandbox.polar.sh for testing before going live
+    plans: [
+      {
+        // REQUIRED — the Polar product ID from your dashboard
+        productId:
+          process.env.NODE_ENV === "development"
+            ? "your_sandbox_product_id"
+            : "your_production_product_id",
+        name: "Starter",
+        description: "Perfect for small projects",
+        price: 99,
+        priceAnchor: 149,
+        features: [
+          { name: "NextJS boilerplate" },
+          { name: "User oauth" },
+          { name: "Emails" },
+        ],
+      },
+    ],
   },
 } as ConfigProps;
 
