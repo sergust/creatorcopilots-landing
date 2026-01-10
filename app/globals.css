@@ -1,11 +1,52 @@
 @import "tailwindcss";
-@plugin "daisyui" {
-  themes: light --default;
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: "cupcake";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+  font-family: var(--font-outfit), "Outfit", sans-serif;
+  /* Base colors - warm light grays */
+  --color-base-100: oklch(99% 0.005 80);
+  --color-base-200: oklch(96% 0.008 80);
+  --color-base-300: oklch(92% 0.012 80);
+  --color-base-content: oklch(25% 0.02 260);
+  /* Primary - indigo/purple blue for button */
+  --color-primary: oklch(55% 0.2 270);
+  --color-primary-content: oklch(98% 0.01 270);
+  /* Secondary - pink/magenta for insights icon */
+  --color-secondary: oklch(80% 0.12 340);
+  --color-secondary-content: oklch(45% 0.15 340);
+  /* Accent - peach/orange for step 3 */
+  --color-accent: oklch(82% 0.12 65);
+  --color-accent-content: oklch(40% 0.1 65);
+  /* Neutral */
+  --color-neutral: oklch(30% 0.015 260);
+  --color-neutral-content: oklch(95% 0.005 260);
+  /* Status colors */
+  --color-info: oklch(75% 0.14 195);
+  --color-info-content: oklch(30% 0.08 195);
+  --color-success: oklch(65% 0.2 145);
+  --color-success-content: oklch(98% 0.01 145);
+  --color-warning: oklch(80% 0.18 85);
+  --color-warning-content: oklch(25% 0.08 85);
+  --color-error: oklch(60% 0.24 25);
+  --color-error-content: oklch(98% 0.01 25);
+  --radius-selector: 0.75rem;
+  --radius-field: 0.75rem;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
 }
 
-@theme {
-  --font-display: "Satoshi", "sans-serif";
-  
+@theme inline {
+  --font-sans: var(--font-outfit);
+  --font-display: "Outfit", "sans-serif";
+
   --animate-shimmer: shimmer 3s ease-out infinite alternate;
   --animate-opacity: opacity 0.25s ease-in-out;
   --animate-appearFromRight: appearFromRight 300ms ease-in-out;
@@ -46,6 +87,7 @@
 html,
 body {
   scroll-behavior: smooth !important;
+  font-family: var(--font-outfit), "Outfit", sans-serif;
 }
 
 progress::-webkit-progress-value {

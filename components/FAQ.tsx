@@ -13,22 +13,54 @@ interface FAQItemProps {
 
 const faqList: FAQItemProps[] = [
   {
-    question: "What do I get exactly?",
-    answer: <div className="space-y-2 leading-relaxed">Loreum Ipseum</div>,
+    question: "What do I need to get started?",
+    answer: (
+      <div className="space-y-2 leading-relaxed">
+        Just two things: your reel video file and a screenshot of your Instagram
+        retention graph from Insights. Upload both, and our AI does the rest.
+      </div>
+    ),
+  },
+  {
+    question: "How is this different from ChatGPT or other AI tools?",
+    answer: (
+      <div className="space-y-2 leading-relaxed">
+        ChatGPT gives generic advice. Reels Copilot syncs YOUR video with YOUR
+        retention data and diagnoses YOUR specific problems. We show you the
+        exact second viewers leave and explain why—not vague tips, but precise
+        analysis of your content.
+      </div>
+    ),
+  },
+  {
+    question: "Will this work for my niche?",
+    answer: (
+      <div className="space-y-2 leading-relaxed">
+        Yes. Retention psychology works across all niches. Whether you&apos;re in
+        fitness, finance, cooking, or lifestyle—viewers drop off for the same
+        core reasons: weak hooks, early payoffs, pacing issues. We identify what
+        applies to your specific content.
+      </div>
+    ),
+  },
+  {
+    question: "How accurate is the analysis?",
+    answer: (
+      <div className="space-y-2 leading-relaxed">
+        We use advanced AI to parse retention graphs with high accuracy. The
+        synced diagnosis shows you exactly what happened at each drop-off
+        point—you can verify it yourself by watching the video at that timestamp.
+      </div>
+    ),
   },
   {
     question: "Can I get a refund?",
     answer: (
       <p>
-        Yes! You can request a refund within 7 days of your purchase. Reach out
-        by email.
+        Yes! We offer a 7-day refund policy, no questions asked. If Reels Copilot
+        isn&apos;t helping you understand your content better, just reach out by
+        email.
       </p>
-    ),
-  },
-  {
-    question: "I have another question",
-    answer: (
-      <div className="space-y-2 leading-relaxed">Cool, contact us by email</div>
     ),
   },
 ];

@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import { Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { getSEOTags } from "@/libs/seo";
@@ -7,7 +7,11 @@ import ClientLayout from "@/components/LayoutClient";
 import config from "@/config";
 import "./globals.css";
 
-const font = Inter({ subsets: ["latin"] });
+const outfit = Outfit({
+	variable: "--font-outfit",
+	subsets: ["latin"],
+	display: "swap",
+});
 
 export const viewport: Viewport = {
 	// Will use the primary color of your theme to show a nice theme color in the URL bar of supported browsers
@@ -26,9 +30,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 			<html
 				lang="en"
 				data-theme={config.colors.theme}
-				className={font.className}
+				className={outfit.variable}
 			>
-				<body>
+				<body className="antialiased">
 					{/* ClientLayout contains all the client wrappers (Crisp chat support, toast messages, tooltips, etc.) */}
 					<ClientLayout>{children}</ClientLayout>
 				</body>

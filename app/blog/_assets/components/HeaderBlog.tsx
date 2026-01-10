@@ -5,8 +5,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Popover, Transition } from "@headlessui/react";
 import Link from "next/link";
-import Image from "next/image";
-import logo from "@/app/icon.png";
+import Logo from "@/components/Logo";
 import config from "@/config";
 import { categories } from "../content";
 import ButtonSignin from "@/components/ButtonSignin";
@@ -162,14 +161,7 @@ const HeaderBlog = () => {
             href="/"
             title={`${config.appName} homepage`}
           >
-            <Image
-              src={logo}
-              alt={`${config.appName} logo`}
-              className="w-8"
-              priority={true}
-              width={32}
-              height={32}
-            />
+            <Logo className="w-8 h-8" />
             <span className="font-extrabold text-lg">{config.appName}</span>
           </Link>
         </div>
@@ -230,15 +222,7 @@ const HeaderBlog = () => {
               title={`${config.appName} homepage`}
               href="/"
             >
-              <Image
-                src={logo}
-                alt={`${config.appName} logo`}
-                className="w-8"
-                placeholder="blur"
-                priority={true}
-                width={32}
-                height={32}
-              />
+              <Logo className="w-8 h-8" />
               <span className="font-extrabold text-lg">{config.appName}</span>
             </Link>
             <button
