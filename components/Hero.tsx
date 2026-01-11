@@ -5,18 +5,33 @@ const Hero = () => {
     <section className="min-h-[80vh] flex items-center justify-center bg-base-100 px-8 py-20 lg:py-32">
       <div className="max-w-4xl mx-auto flex flex-col items-center text-center gap-8">
         {/* Badge/Tagline */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-base-200/50 border border-base-300 text-sm font-medium">
+        {/* <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-base-200/50 border border-base-300 text-sm font-medium">
           <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
           Your AI Creative Producer
-        </div>
+        </div> */}
 
         {/* Main Headline */}
         <h1 className="font-extrabold text-4xl sm:text-5xl lg:text-7xl tracking-tight leading-[1.1]">
-          Go viral with{" "}
-          <span className="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
-            proven tools
+          Go{" "}
+          <span className="relative inline-block">
+            viral
+            <svg
+              className="absolute -bottom-2 left-0 w-full"
+              viewBox="0 0 200 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M2 8.5C20 3.5 50 10 80 6C110 2 140 9 170 5C185 3.5 195 6 198 7"
+                stroke="currentColor"
+                strokeWidth="5"
+                strokeLinecap="round"
+                className="text-primary stroke-3 [stroke-dasharray:300] [stroke-dashoffset:300] animate-draw"
+              />
+            </svg>
           </span>{" "}
-          and prediction
+          with proven tools and prediction
         </h1>
 
         {/* Description */}
@@ -47,7 +62,7 @@ const Hero = () => {
         </div>
 
         {/* Social Proof */}
-        <div className="flex flex-col items-center gap-3 mt-8 pt-8 border-t border-base-300/50">
+        {/* <div className="flex flex-col items-center gap-3 mt-8 pt-8 border-t border-base-300/50">
           <div className="flex -space-x-2">
             {[1, 2, 3, 4, 5].map((i) => (
               <div
@@ -63,7 +78,7 @@ const Hero = () => {
             <span className="font-semibold text-base-content">500+</span>{" "}
             content creators
           </p>
-        </div>
+        </div> */}
       </div>
     </section>
   );
