@@ -4,7 +4,7 @@ import { ConfigProps } from "./types/config";
 const themes = {
   cupcake: {
     primary: "#6366f1", // indigo-500 (matches oklch(55% 0.2 270))
-  }
+  },
 };
 
 const config = {
@@ -21,20 +21,20 @@ const config = {
     // Hide Crisp by default, except on route "/". Crisp is toggled with <ButtonSupport/>. If you want to show Crisp on every routes, just remove this below
     onlyShowOnRoutes: ["/"],
   },
-  stripe: {
-    // Create multiple plans in your Stripe dashboard, then add them here. You can add as many plans as you want, just make sure to add the priceId
+  lemonsqueezy: {
+    // Create a product and add multiple variants via your Lemon Squeezy dashboard, then add them here. You can add as many plans as you want, just make sure to add the variantId.
     plans: [
       {
         // REQUIRED — we use this to find the plan in the webhook (for instance if you want to update the user's credits based on the plan)
-        priceId:
+        variantId:
           process.env.NODE_ENV === "development"
-            ? "price_1Niyy5AxyNprDp7iZIqEyD2h"
-            : "price_456",
+            ? "1213979" // Replace with your sandbox variant ID
+            : "1213979", // Replace with your production variant ID
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "Starter",
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
         description: "Try it out with 1 reel analysis",
-        // The price you want to display, the one user will be charged on Stripe.
+        // The price you want to display, the one user will be charged on Lemon Squeezy.
         price: 9,
         // If you have an anchor price (i.e. $29) that you want to display crossed out, put it here. Otherwise, leave it empty
         priceAnchor: 19,
@@ -46,10 +46,10 @@ const config = {
         ],
       },
       {
-        priceId:
+        variantId:
           process.env.NODE_ENV === "development"
-            ? "price_1O5KtcAxyNprDp7iftKnrrpw"
-            : "price_456",
+            ? "1213975" // Replace with your sandbox variant ID
+            : "1213975", // Replace with your production variant ID
         // This plan will look different on the pricing page, it will be highlighted. You can only have one plan with isFeatured: true
         isFeatured: true,
         name: "Pro",
@@ -91,28 +91,6 @@ const config = {
     loginUrl: "/sign-in",
     // REQUIRED — the path you want to redirect users to after a successful login (i.e. /dashboard, /private). This is normally a private page for users to manage their accounts. It's used in apiClient (/libs/api.js) upon 401 errors from our API & in ButtonSignin.js
     callbackUrl: "/dashboard",
-  },
-  polar: {
-    // Create products in your Polar dashboard, then add them here
-    // Use sandbox.polar.sh for testing before going live
-    plans: [
-      {
-        // REQUIRED — the Polar product ID from your dashboard
-        productId:
-          process.env.NODE_ENV === "development"
-            ? "your_sandbox_product_id"
-            : "your_production_product_id",
-        name: "Starter",
-        description: "Try it out with 1 reel analysis",
-        price: 9,
-        priceAnchor: 19,
-        features: [
-          { name: "1 reel analysis per month" },
-          { name: "Retention graph parsing" },
-          { name: "Drop-off diagnosis" },
-        ],
-      },
-    ],
   },
 } as ConfigProps;
 

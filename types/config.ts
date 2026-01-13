@@ -30,10 +30,10 @@ export interface ConfigProps {
     id?: string;
     onlyShowOnRoutes?: string[];
   };
-  stripe: {
+  lemonsqueezy: {
     plans: {
       isFeatured?: boolean;
-      priceId: string;
+      variantId: string;
       name: string;
       description?: string;
       price: number;
@@ -60,18 +60,5 @@ export interface ConfigProps {
   auth: {
     loginUrl: string;
     callbackUrl: string;
-  };
-  polar?: {
-    plans: {
-      isFeatured?: boolean;
-      productId: string;
-      name: string;
-      description?: string;
-      price: number;
-      priceAnchor?: number;
-      features: {
-        name: string;
-      }[];
-    }[];
   };
 }
