@@ -1,15 +1,30 @@
 "use client";
 
 import { useState } from "react";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import apiClient from "@/libs/api";
 import config from "@/config";
 
+interface ButtonCheckoutProps {
+  variantId: string;
+}
+
 // This component is used to create Lemon Squeezy Checkout Sessions
-// It calls the /api/lemonsqueezy/create-checkout route with the variantId and redirectUrl
-const ButtonCheckout = ({ variantId }: { variantId: string }) => {
+// If user is not authenticated, redirects to /checkout page which handles sign-in flow
+const ButtonCheckout = ({ variantId }: ButtonCheckoutProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { isSignedIn, isLoaded } = useUser();
+  const router = useRouter();
 
   const handlePayment = async () => {
+    // Always redirect to checkout page - it handles both auth and payment
+    if (!isSignedIn) {
+      router.push(`/checkout?variant=${variantId}`);
+      return;
+    }
+
+    // User is already signed in - go directly to Lemon Squeezy
     setIsLoading(true);
 
     try {
@@ -17,24 +32,24 @@ const ButtonCheckout = ({ variantId }: { variantId: string }) => {
         "/lemonsqueezy/create-checkout",
         {
           variantId,
-          redirectUrl: window.location.href,
+          redirectUrl: window.location.origin + "/dashboard",
         }
       );
 
       window.location.href = url;
     } catch (e) {
       console.error(e);
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
     <button
       className="btn btn-primary btn-block group"
       onClick={() => handlePayment()}
+      disabled={!isLoaded}
     >
-      {isLoading ? (
+      {isLoading || !isLoaded ? (
         <span className="loading loading-spinner loading-xs"></span>
       ) : (
         <svg
