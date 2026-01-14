@@ -1,5 +1,6 @@
 import config from "@/config";
 import { clerkClient } from "@clerk/nextjs/server";
+import { sendEmail } from "@/libs/resend";
 import crypto from "crypto";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -80,6 +81,100 @@ async function findOrCreateClerkUser(email: string, customerId: string) {
   return newUser;
 }
 
+// Send welcome email after successful payment
+async function sendWelcomeEmail({
+  email,
+  firstName,
+  planName,
+}: {
+  email: string;
+  firstName?: string;
+  planName: string;
+}) {
+  const greeting = firstName ? `Hi ${firstName}` : "Hi there";
+
+  await sendEmail({
+    to: email,
+    subject: `Welcome to ${config.appName} - Your ${planName} Plan is Active!`,
+    text: `${greeting},
+
+Thank you for subscribing to ${config.appName}!
+
+Your ${planName} plan is now active and you have full access to all features.
+
+Getting Started:
+1. Go to https://app.creatorcopilots.com
+2. Upload your Instagram Reel video
+3. Add a screenshot of your Insights retention graph
+4. Get AI-powered analysis and recommendations
+
+If you have any questions, just reply to this email - we're here to help!
+
+Best,
+The ${config.appName} Team`,
+    html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #374151; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 32px;">
+    <h1 style="color: #6366f1; margin: 0; font-size: 28px;">${config.appName}</h1>
+  </div>
+
+  <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: 16px; padding: 32px; text-align: center; margin-bottom: 32px;">
+    <div style="background: white; width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+    </div>
+    <h2 style="color: white; margin: 0 0 8px; font-size: 24px;">Payment Successful!</h2>
+    <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 16px;">Your ${planName} plan is now active</p>
+  </div>
+
+  <p style="font-size: 16px; margin-bottom: 24px;">${greeting},</p>
+
+  <p style="font-size: 16px; margin-bottom: 24px;">
+    Thank you for subscribing to ${config.appName}! You now have full access to AI-powered reel analysis.
+  </p>
+
+  <div style="background: #f9fafb; border-radius: 12px; padding: 24px; margin-bottom: 32px;">
+    <h3 style="margin: 0 0 16px; color: #111827; font-size: 18px;">Getting Started</h3>
+    <ol style="margin: 0; padding-left: 20px; color: #4b5563;">
+      <li style="margin-bottom: 12px;">Go to <a href="https://app.creatorcopilots.com" style="color: #6366f1; text-decoration: none; font-weight: 500;">app.creatorcopilots.com</a></li>
+      <li style="margin-bottom: 12px;">Upload your Instagram Reel video</li>
+      <li style="margin-bottom: 12px;">Add a screenshot of your Insights retention graph</li>
+      <li style="margin-bottom: 0;">Get AI-powered analysis and recommendations</li>
+    </ol>
+  </div>
+
+  <div style="text-align: center; margin-bottom: 32px;">
+    <a href="https://app.creatorcopilots.com" style="display: inline-block; background: #6366f1; color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">Start Analyzing Your Reels</a>
+  </div>
+
+  <p style="font-size: 14px; color: #6b7280; margin-bottom: 8px;">
+    If you have any questions, just reply to this email - we're here to help!
+  </p>
+
+  <p style="font-size: 16px; margin-bottom: 4px;">Best,</p>
+  <p style="font-size: 16px; margin: 0; font-weight: 500;">The ${config.appName} Team</p>
+
+  <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 32px 0;">
+
+  <p style="font-size: 12px; color: #9ca3af; text-align: center; margin: 0;">
+    You received this email because you subscribed to ${config.appName}.<br>
+    <a href="https://creatorcopilots.com" style="color: #6b7280;">creatorcopilots.com</a>
+  </p>
+</body>
+</html>
+    `,
+  });
+
+  console.log(`[LemonSqueezy Webhook] Welcome email sent to ${email}`);
+}
+
 // This is where we receive Lemon Squeezy webhook events
 // It's used to update user data, send emails, etc...
 // User data is stored in Clerk metadata (public for access, private for billing)
@@ -146,13 +241,16 @@ export async function POST(req: NextRequest) {
           lemonSqueezyProductId: productId,
         };
 
+        let userFirstName: string | undefined;
+
         if (userId) {
           // User was logged in during checkout - update their metadata
           console.log(`[LemonSqueezy Webhook] order_created: Updating existing user ${userId}`);
-          await client.users.updateUser(userId, {
+          const updatedUser = await client.users.updateUser(userId, {
             publicMetadata: { ...publicMetadata },
             privateMetadata: { ...privateMetadata },
           });
+          userFirstName = updatedUser.firstName || undefined;
         } else if (email) {
           // User was not logged in - find or create user
           const user = await findOrCreateClerkUser(email, customerId!);
@@ -167,6 +265,21 @@ export async function POST(req: NextRequest) {
               ...privateMetadata,
             },
           });
+          userFirstName = user.firstName || undefined;
+        }
+
+        // Send welcome email after successful payment
+        if (email) {
+          try {
+            await sendWelcomeEmail({
+              email,
+              firstName: userFirstName || attributes.user_name?.split(" ")[0],
+              planName: plan.name,
+            });
+          } catch (emailError) {
+            console.error(`[LemonSqueezy Webhook] Failed to send welcome email:`, emailError);
+            // Don't throw - email failure shouldn't fail the webhook
+          }
         }
 
         break;

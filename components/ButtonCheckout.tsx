@@ -32,7 +32,7 @@ const ButtonCheckout = ({ variantId }: ButtonCheckoutProps) => {
         "/lemonsqueezy/create-checkout",
         {
           variantId,
-          redirectUrl: window.location.origin + "/dashboard",
+          redirectUrl: "https://app.creatorcopilots.com/welcome",
         }
       );
 
