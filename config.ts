@@ -14,7 +14,7 @@ const config = {
   appDescription:
     "Stop guessing why your reels underperform. AI analyzes your retention graph, pinpoints exactly where viewers drop off, and gives you the specific words to fix it.",
   // REQUIRED (no https://, not trailing slash at the end, just the naked domain)
-  domainName: "reelscopilot.com",
+  domainName: "creatorcopilots.com",
   crisp: {
     // Crisp website ID. IF YOU DON'T USE CRISP: just remove this => Then add a support email in this config file (resend.supportEmail) otherwise customer support won't work.
     id: "",
