@@ -1,6 +1,40 @@
+"use client";
+
 import Image from "next/image";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import config from "@/config";
+
+interface UserPublicMetadata {
+  hasAccess?: boolean;
+  [key: string]: unknown;
+}
 
 const CTA = () => {
+  const { user, isSignedIn, isLoaded } = useUser();
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (!isLoaded) return;
+
+    if (!isSignedIn) {
+      // Not logged in - go to pricing
+      router.push("/#pricing");
+      return;
+    }
+
+    // Check if user has subscription access
+    const hasAccess = (user?.publicMetadata as UserPublicMetadata)?.hasAccess;
+
+    if (hasAccess) {
+      // Logged in and subscribed - go to app
+      window.location.href = config.appUrl;
+    } else {
+      // Logged in but not subscribed - go to pricing
+      router.push("/#pricing");
+    }
+  };
+
   return (
     <section className="relative hero overflow-hidden min-h-screen">
       <Image
@@ -20,7 +54,17 @@ const CTA = () => {
             exactly what&apos;s holding you back.
           </p>
 
-          <button className="btn btn-primary btn-wide">Upload Your Reel</button>
+          <button
+            onClick={handleClick}
+            disabled={!isLoaded}
+            className="btn btn-primary btn-wide"
+          >
+            {!isLoaded ? (
+              <span className="loading loading-spinner loading-sm"></span>
+            ) : (
+              "Upload Your Reel"
+            )}
+          </button>
         </div>
       </div>
     </section>

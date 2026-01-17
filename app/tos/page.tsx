@@ -57,39 +57,47 @@ const TOS = () => {
           className="leading-relaxed whitespace-pre-wrap"
           style={{ fontFamily: "sans-serif" }}
         >
-          {`Last Updated: September 26, 2023
+          {`Last Updated: January 17, 2026
 
-Welcome to ShipFast!
+Welcome to ${config.appName}!
 
-These Terms of Service ("Terms") govern your use of the ShipFast website at https://shipfa.st ("Website") and the services provided by ShipFast. By using our Website and services, you agree to these Terms.
+These Terms of Service ("Terms") govern your use of the ${config.appName} website at https://${config.domainName} ("Website") and the services provided by ${config.appName}. By using our Website and services, you agree to these Terms.
 
-1. Description of ShipFast
+1. Description of ${config.appName}
 
-ShipFast is a platform that offers a JavaScript code boilerplate to assist entrepreneurs in launching their startups more efficiently.
+${config.appName} is an AI-powered video analysis platform that helps content creators understand and improve their Instagram Reels performance by analyzing retention graphs and providing actionable recommendations.
 
-2. Ownership and Usage Rights
+2. Service Usage and Subscriptions
 
-When you purchase a package from ShipFast, you gain the right to download and use the code provided for creating applications. You own the code you create but do not have the right to resell it. We offer a full refund within 7 days of purchase, as specified in our refund policy.
+When you purchase a subscription from ${config.appName}, you gain access to our video analysis services according to your selected plan. Your subscription grants you personal, non-transferable access to the service. Analysis results and recommendations generated for your content are for your personal use only and may not be resold or redistributed.
 
-3. User Data and Privacy
+3. User Content
 
-We collect and store user data, including name, email, and payment information, as necessary to provide our services. For details on how we handle your data, please refer to our Privacy Policy at https://shipfa.st/privacy-policy.
+By uploading videos and screenshots to ${config.appName}, you grant us a limited license to process and analyze your content solely for the purpose of providing our services. You retain all ownership rights to your original content. We do not claim ownership of your uploaded materials.
 
-4. Non-Personal Data Collection
+4. User Data and Privacy
+
+We collect and store user data, including name, email, and payment information, as necessary to provide our services. For details on how we handle your data, please refer to our Privacy Policy at https://${config.domainName}/privacy-policy.
+
+5. Non-Personal Data Collection
 
 We use web cookies to collect non-personal data for the purpose of improving our services and user experience.
 
-5. Governing Law
+6. Limitation of Liability
 
-These Terms are governed by the laws of France.
+${config.appName} provides analysis and recommendations as guidance only. We do not guarantee specific results or outcomes from using our recommendations. The service is provided "as is" without warranties of any kind.
 
-6. Updates to the Terms
+7. Governing Law
+
+These Terms are governed by the laws of the United States.
+
+8. Updates to the Terms
 
 We may update these Terms from time to time. Users will be notified of any changes via email.
 
-For any questions or concerns regarding these Terms of Service, please contact us at marc@shipfa.st.
+For any questions or concerns regarding these Terms of Service, please contact us at ${config.resend.supportEmail}.
 
-Thank you for using ShipFast!`}
+Thank you for using ${config.appName}!`}
         </pre>
       </div>
     </main>

@@ -1,6 +1,39 @@
+"use client";
+
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import config from "@/config";
 
+interface UserPublicMetadata {
+  hasAccess?: boolean;
+  [key: string]: unknown;
+}
+
 const Hero = () => {
+  const { user, isSignedIn, isLoaded } = useUser();
+  const router = useRouter();
+
+  const handleGetStarted = () => {
+    if (!isLoaded) return;
+
+    if (!isSignedIn) {
+      // Not logged in - go to pricing
+      router.push("/#pricing");
+      return;
+    }
+
+    // Check if user has subscription access
+    const hasAccess = (user?.publicMetadata as UserPublicMetadata)?.hasAccess;
+
+    if (hasAccess) {
+      // Logged in and subscribed - go to app
+      window.location.href = config.appUrl;
+    } else {
+      // Logged in but not subscribed - go to pricing
+      router.push("/#pricing");
+    }
+  };
+
   return (
     <section className="min-h-[80vh] flex items-center justify-center bg-base-100 px-8 py-20 lg:py-32">
       <div className="max-w-4xl mx-auto flex flex-col items-center text-center gap-8">
@@ -42,22 +75,32 @@ const Hero = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
-          <button className="btn btn-primary btn-lg px-8 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all">
-            Get Started
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-5 h-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-              />
-            </svg>
+          <button
+            onClick={handleGetStarted}
+            disabled={!isLoaded}
+            className="btn btn-primary btn-lg px-8 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all"
+          >
+            {!isLoaded ? (
+              <span className="loading loading-spinner loading-sm"></span>
+            ) : (
+              <>
+                Get Started
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                  />
+                </svg>
+              </>
+            )}
           </button>
         </div>
 
