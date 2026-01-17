@@ -20,9 +20,9 @@ const features = [
     title: "See What Instagram Won't Show You",
     description:
       "Upload your Insights screenshot. AI parses the retention curve, identifies every drop-off point, and syncs it to the exact moment in your video. No more guessing.",
-    type: "image",
-    path: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-    alt: "Retention graph analysis",
+    type: "video",
+    path: "https://k4t9lyhlmz.ufs.sh/f/h4tNWAuimNTfs8ezxedJAvKaSF8uzON6BQ05hpR3X9lxgbIG",
+    format: "video/mp4",
     svg: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -44,9 +44,9 @@ const features = [
     title: "Pinpoint the Problem Second",
     description:
       "Watch your video with the retention graph overlaid. When 30% of viewers leave at 0:08, see exactly what you said and showed at that moment.",
-    type: "image",
-    path: "https://images.unsplash.com/photo-1536240478700-b869070f9279?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-    alt: "Video analysis with overlay",
+    type: "video",
+    path: "https://k4t9lyhlmz.ufs.sh/f/h4tNWAuimNTf7KfAY18mBrbNZDvUlC5LWRA4uw7ixz6gnMdf",
+    format: "video/mp4",
     svg: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -65,36 +65,12 @@ const features = [
     ),
   },
   {
-    title: "Ask Why, Get Real Answers",
-    description:
-      "Chat with AI about specific moments. 'Why did viewers leave at 0:15?' Get explanations like: 'You revealed the payoff too early—the mystery was gone.'",
-    type: "image",
-    path: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-    alt: "AI chat analysis",
-    svg: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="w-6 h-6"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
-        />
-      </svg>
-    ),
-  },
-  {
     title: "Not Tips—Exact Words",
     description:
       "No generic advice. Get specific rewrites: Replace 'Here's how to grow on Instagram' with 'Nobody talks about this, but I gained 50k followers by...' Ready to copy-paste.",
-    type: "image",
-    path: "https://images.unsplash.com/photo-1455390582262-044cdead277a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-    alt: "Script rewrite suggestions",
+    type: "video",
+    path: "https://k4t9lyhlmz.ufs.sh/f/h4tNWAuimNTftPgVkHpRhgG8y2k3cfwZbuINO9Ezxi5Rjneo",
+    format: "video/mp4",
     svg: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -108,6 +84,30 @@ const features = [
           strokeLinecap="round"
           strokeLinejoin="round"
           d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+        />
+      </svg>
+    ),
+  },
+  {
+    title: "Ask Why, Get Real Answers",
+    description:
+      "Chat with AI about specific moments. 'Why did viewers leave at 0:15?' Get explanations like: 'You revealed the payoff too early—the mystery was gone.'",
+    type: "video",
+    path: "https://k4t9lyhlmz.ufs.sh/f/h4tNWAuimNTfotFrbJVSBZ5GJQfqHbugaLWjnURTyC1ecmxV",
+    format: "video/mp4",
+    svg: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="w-6 h-6"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
         />
       </svg>
     ),

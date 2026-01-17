@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useSearchParams, useRouter } from "next/navigation";
 import apiClient from "@/libs/api";
+import config from "@/config";
 
 function CheckoutContent() {
   const { isSignedIn, isLoaded, user } = useUser();
@@ -41,7 +42,7 @@ function CheckoutContent() {
         "/lemonsqueezy/create-checkout",
         {
           variantId,
-          redirectUrl: "https://app.creatorcopilots.com/welcome",
+          redirectUrl: `${config.appUrl}/welcome`,
         }
       );
 

@@ -103,7 +103,7 @@ Thank you for subscribing to ${config.appName}!
 Your ${planName} plan is now active and you have full access to all features.
 
 Getting Started:
-1. Go to https://app.creatorcopilots.com
+1. Go to ${config.appUrl}
 2. Upload your Instagram Reel video
 3. Add a screenshot of your Insights retention graph
 4. Get AI-powered analysis and recommendations
@@ -143,7 +143,7 @@ The ${config.appName} Team`,
   <div style="background: #f9fafb; border-radius: 12px; padding: 24px; margin-bottom: 32px;">
     <h3 style="margin: 0 0 16px; color: #111827; font-size: 18px;">Getting Started</h3>
     <ol style="margin: 0; padding-left: 20px; color: #4b5563;">
-      <li style="margin-bottom: 12px;">Go to <a href="https://app.creatorcopilots.com" style="color: #6366f1; text-decoration: none; font-weight: 500;">app.creatorcopilots.com</a></li>
+      <li style="margin-bottom: 12px;">Go to <a href="${config.appUrl}" style="color: #6366f1; text-decoration: none; font-weight: 500;">app.creatorcopilots.com</a></li>
       <li style="margin-bottom: 12px;">Upload your Instagram Reel video</li>
       <li style="margin-bottom: 12px;">Add a screenshot of your Insights retention graph</li>
       <li style="margin-bottom: 0;">Get AI-powered analysis and recommendations</li>
@@ -151,7 +151,7 @@ The ${config.appName} Team`,
   </div>
 
   <div style="text-align: center; margin-bottom: 32px;">
-    <a href="https://app.creatorcopilots.com" style="display: inline-block; background: #6366f1; color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">Start Analyzing Your Reels</a>
+    <a href="${config.appUrl}" style="display: inline-block; background: #6366f1; color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">Start Analyzing Your Reels</a>
   </div>
 
   <p style="font-size: 14px; color: #6b7280; margin-bottom: 8px;">

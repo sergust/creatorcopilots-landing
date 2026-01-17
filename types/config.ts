@@ -26,6 +26,7 @@ export interface ConfigProps {
   appName: string;
   appDescription: string;
   domainName: string;
+  appUrl: string;
   crisp: {
     id?: string;
     onlyShowOnRoutes?: string[];
