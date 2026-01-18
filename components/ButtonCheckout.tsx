@@ -18,7 +18,13 @@ const ButtonCheckout = ({ variantId }: ButtonCheckoutProps) => {
   const router = useRouter();
 
   const handlePayment = async () => {
-    // Always redirect to checkout page - it handles both auth and payment
+    // Check if manual payment processing is enabled
+    if (config.paymentProcessing === "manual") {
+      router.push(`/manual-checkout?variant=${variantId}`);
+      return;
+    }
+
+    // Auto mode: redirect to checkout page - it handles both auth and payment
     if (!isSignedIn) {
       router.push(`/checkout?variant=${variantId}`);
       return;

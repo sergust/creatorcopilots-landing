@@ -44,27 +44,76 @@ const CTA = () => {
         fill
       />
       <div className="relative hero-overlay bg-neutral bg-opacity-70"></div>
+
+
       <div className="relative hero-content text-center text-neutral-content p-8">
         <div className="flex flex-col items-center max-w-xl p-8 md:p-0">
-          <h2 className="font-bold text-3xl md:text-5xl tracking-tight mb-8 md:mb-12">
-            Stop guessing. Start knowing.
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium mb-6">
+            <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+            Takes less than 60 seconds
+          </div>
+
+          <h2 className="font-bold text-4xl md:text-6xl tracking-tight mb-8 md:mb-12 leading-tight">
+            Stop guessing. Start growing.
           </h2>
           <p className="text-lg opacity-80 mb-12 md:mb-16">
-            Your next viral reel is one diagnosis away. Upload your reel and see
-            exactly what&apos;s holding you back.
+            Upload your reel. Get your diagnosis in 60 seconds. Know exactly
+            what&apos;s holding you back.
           </p>
 
           <button
             onClick={handleClick}
             disabled={!isLoaded}
-            className="btn btn-primary btn-wide"
+            className="btn btn-gradient btn-lg px-10 group shadow-lg hover:shadow-xl transition-all"
           >
             {!isLoaded ? (
               <span className="loading loading-spinner loading-sm"></span>
             ) : (
-              "Upload Your Reel"
+              <>
+                Upload Your Reel
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="size-[1.2em] group-hover:-translate-y-0.5 transition-transform"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z"
+                  />
+                </svg>
+              </>
             )}
           </button>
+
+          {/* Social Proof */}
+          {/* <div className="flex flex-col items-center gap-4 mt-10">
+            <div className="avatar-group -space-x-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="avatar avatar-placeholder">
+                  <div className="w-10 rounded-full bg-linear-to-br from-primary to-secondary text-white flex items-center justify-center">
+                    <span className="text-sm font-semibold">
+                      {String.fromCharCode(64 + i)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+              <div className="avatar avatar-placeholder">
+                <div className="w-10 rounded-full bg-neutral text-neutral-content flex items-center justify-center">
+                  <span className="text-xs">+2k</span>
+                </div>
+              </div>
+            </div>
+            <p className="text-sm text-neutral-content/80">
+              Join{" "}
+              <span className="font-semibold text-white">2,000+</span> creators
+              already growing
+            </p>
+          </div> */}
         </div>
       </div>
     </section>

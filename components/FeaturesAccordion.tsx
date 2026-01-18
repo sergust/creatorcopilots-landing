@@ -120,47 +120,77 @@ const Item = ({
   isOpen,
   setFeatureSelected,
 }: {
-  index: number;
   feature: Feature;
   isOpen: boolean;
   setFeatureSelected: () => void;
 }) => {
-  const accordion = useRef(null);
+  const accordion = useRef<HTMLDivElement>(null);
   const { title, description, svg } = feature;
 
   return (
     <li>
       <button
-        className="relative flex gap-2 items-center w-full py-5 text-base font-medium text-left md:text-lg"
+        className="group relative flex items-start gap-4 w-full py-4 text-left"
         onClick={(e) => {
           e.preventDefault();
           setFeatureSelected();
         }}
         aria-expanded={isOpen}
       >
-        <span className={`duration-100 ${isOpen ? "text-primary" : ""}`}>
-          {svg}
-        </span>
-        <span
-          className={`flex-1 text-base-content ${
-            isOpen ? "text-primary font-semibold" : ""
+        {/* Icon */}
+        <div
+          className={`shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+            isOpen
+              ? "border-primary bg-primary text-white"
+              : "border-base-300 text-base-content/40 group-hover:border-base-content/40"
           }`}
         >
-          <h3 className="inline">{title}</h3>
-        </span>
-      </button>
+          {svg}
+        </div>
 
-      <div
-        ref={accordion}
-        className={`transition-all duration-300 ease-in-out text-base-content-secondary overflow-hidden`}
-        style={
-          isOpen
-            ? { maxHeight: accordion?.current?.scrollHeight, opacity: 1 }
-            : { maxHeight: 0, opacity: 0 }
-        }
-      >
-        <div className="pb-5 leading-relaxed">{description}</div>
-      </div>
+        {/* Content */}
+        <div className="flex-1 min-w-0 pt-1">
+          <h3
+            className={`font-semibold text-base md:text-lg transition-colors duration-200 ${
+              isOpen
+                ? "text-base-content"
+                : "text-base-content/60 group-hover:text-base-content/80"
+            }`}
+          >
+            {title}
+          </h3>
+
+          {/* Description expands */}
+          <div
+            ref={accordion}
+            className="overflow-hidden transition-all duration-300 ease-in-out"
+            style={
+              isOpen
+                ? { maxHeight: accordion?.current?.scrollHeight, opacity: 1 }
+                : { maxHeight: 0, opacity: 0 }
+            }
+          >
+            <p className="pt-2 text-sm md:text-base text-base-content/50 leading-relaxed pr-4">
+              {description}
+            </p>
+          </div>
+        </div>
+
+        {/* Arrow */}
+        <svg
+          className={`shrink-0 w-5 h-5 mt-2 transition-all duration-200 ${
+            isOpen
+              ? "text-primary rotate-90"
+              : "text-base-content/20 group-hover:text-base-content/40"
+          }`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </li>
   );
 };
@@ -212,25 +242,29 @@ const FeaturesAccordion = () => {
 
   return (
     <section
-      className="py-24 md:py-32 space-y-24 md:space-y-32 max-w-7xl mx-auto bg-base-100 overflow-hidden"
+      className="relative py-24 md:py-32 space-y-24 md:space-y-32 max-w-7xl mx-auto bg-base-100 overflow-hidden"
       id="features"
     >
+      {/* Background decorations */}
+      <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-primary/5 blur-3xl -z-10 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-secondary/5 blur-3xl -z-10 pointer-events-none" />
+
       <div className="px-8">
         <h2 className="font-extrabold text-3xl sm:text-4xl lg:text-6xl tracking-tight mb-12 md:mb-24">
           Everything you need to
           <br className="sm:hidden" /> finally{" "}
-          <span className="bg-neutral text-neutral-content px-2 md:px-4 leading-relaxed">
+          <span className="relative inline-block">
             understand
+            <span className="absolute -bottom-1 left-0 w-full h-1 bg-primary rounded-full" />
           </span>{" "}
           your audience
         </h2>
-        <div className=" flex flex-col md:flex-row gap-12 md:gap-24">
+        <div className="flex flex-col md:flex-row gap-12 md:gap-24">
           <div className="grid grid-cols-1 items-stretch gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-20">
             <ul className="w-full">
               {features.map((feature, i) => (
                 <Item
                   key={feature.title}
-                  index={i}
                   feature={feature}
                   isOpen={featureSelected === i}
                   setFeatureSelected={() => setFeatureSelected(i)}
@@ -238,7 +272,10 @@ const FeaturesAccordion = () => {
               ))}
             </ul>
 
-            <Media feature={features[featureSelected]} key={featureSelected} />
+            {/* Media with entrance animation */}
+            <div className="animate-media-enter" key={featureSelected}>
+              <Media feature={features[featureSelected]} />
+            </div>
           </div>
         </div>
       </div>

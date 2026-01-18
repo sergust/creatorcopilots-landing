@@ -27,6 +27,7 @@ export interface ConfigProps {
   appDescription: string;
   domainName: string;
   appUrl: string;
+  paymentProcessing?: "auto" | "manual";
   crisp: {
     id?: string;
     onlyShowOnRoutes?: string[];

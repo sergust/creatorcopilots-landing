@@ -17,6 +17,8 @@ const config = {
   domainName: "creatorcopilots.com",
   // REQUIRED — The URL to the main application
   appUrl: "https://app.creatorcopilots.com",
+  // Payment processing mode: "auto" (Lemon Squeezy) or "manual" (email notifications)
+  paymentProcessing: "manual",
   crisp: {
     // Crisp website ID. IF YOU DON'T USE CRISP: just remove this => Then add a support email in this config file (resend.supportEmail) otherwise customer support won't work.
     id: "",
@@ -75,11 +77,11 @@ const config = {
   },
   resend: {
     // REQUIRED — Email 'From' field to be used when sending magic login links
-    fromNoReply: `Reels Copilot <noreply@reelscopilot.com>`,
+    fromNoReply: `Reels Copilot <noreply@creatorcopilots.com>`,
     // REQUIRED — Email 'From' field to be used when sending other emails, like abandoned carts, updates etc..
-    fromAdmin: `Reels Copilot <hello@reelscopilot.com>`,
+    fromAdmin: `Reels Copilot <hello@creatorcopilots.com>`,
     // Email shown to customer if they need support. Leave empty if not needed => if empty, set up Crisp above, otherwise you won't be able to offer customer support."
-    supportEmail: "support@reelscopilot.com",
+    supportEmail: "support@creatorcopilots.com",
   },
   colors: {
     // REQUIRED — The DaisyUI theme to use (added to the main layout.js). Using cupcake theme with custom colors defined in globals.css.
