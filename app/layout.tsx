@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Outfit } from "next/font/google";
 import { Viewport } from "next";
+import Script from "next/script";
 import { ClerkProvider } from "@clerk/nextjs";
 import { getSEOTags } from "@/libs/seo";
 import ClientLayout from "@/components/LayoutClient";
@@ -38,6 +39,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         data-theme={config.colors.theme}
         className={outfit.variable}
       >
+        <head>
+          <Script
+            defer
+            data-website-id="dfid_NpQGvIxtvJX9l4KYrwAsi"
+            data-domain="creatorcopilots.com"
+            data-allow-localhost="true"
+            src="https://datafa.st/js/script.js"
+            strategy="afterInteractive"
+          />
+        </head>
         <body className="antialiased">
           {/* ClientLayout contains all the client wrappers (Crisp chat support, toast messages, tooltips, etc.) */}
           <ClientLayout>{children}</ClientLayout>
