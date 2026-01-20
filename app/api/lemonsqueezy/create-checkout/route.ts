@@ -25,10 +25,13 @@ export async function POST(req: NextRequest) {
     const { userId } = await auth();
     let user = userId ? await currentUser() : null;
 
+    console.log(`[create-checkout] userId: ${userId}, userEmail: ${user?.emailAddresses?.[0]?.emailAddress}`);
+
     // Retry once if user data isn't fully available yet (can happen right after sign-up)
     if (userId && !user?.emailAddresses?.[0]?.emailAddress) {
       await new Promise((resolve) => setTimeout(resolve, 100));
       user = await currentUser();
+      console.log(`[create-checkout] After retry - userId: ${userId}, userEmail: ${user?.emailAddresses?.[0]?.emailAddress}`);
     }
 
     // Get DataFast cookies for revenue attribution
@@ -38,12 +41,18 @@ export async function POST(req: NextRequest) {
 
     const { variantId, redirectUrl } = body;
 
+    // Build user's full name from Clerk
+    const userName = user
+      ? [user.firstName, user.lastName].filter(Boolean).join(" ") || undefined
+      : undefined;
+
     const checkoutURL = await createLemonSqueezyCheckout({
       variantId,
       redirectUrl,
-      // If user is logged in, this will automatically prefill Checkout data like email for faster checkout
+      // If user is logged in, this will automatically prefill Checkout data like email and name for faster checkout
       userId: userId || undefined,
       email: user?.emailAddresses?.[0]?.emailAddress,
+      name: userName,
       // DataFast revenue attribution
       datafastVisitorId,
       datafastSessionId,

@@ -210,7 +210,7 @@ export async function POST(req: NextRequest) {
       case "order_created": {
         // First payment is successful
         // ✅ Grant access to the product
-        const userId = payload.meta?.custom_data?.userId;
+        const userId = payload.meta?.custom_data?.user_id;
         const email = attributes.user_email;
         const orderId = payload.data.id?.toString();
         const variantId = attributes.first_order_item?.variant_id?.toString();
@@ -290,7 +290,7 @@ export async function POST(req: NextRequest) {
         // ✅ Grant access and store comprehensive subscription data
         if (!customerId) break;
 
-        const userId = payload.meta?.custom_data?.userId;
+        const userId = payload.meta?.custom_data?.user_id;
         const email = attributes.user_email;
         const subscriptionId = payload.data.id?.toString();
         const variantId = attributes.variant_id?.toString();
@@ -561,6 +561,52 @@ export async function POST(req: NextRequest) {
           });
         } else {
           console.log(`[LemonSqueezy Webhook] subscription_resumed: No user found for customerId ${customerId}`);
+        }
+
+        break;
+      }
+
+      case "order_refunded": {
+        // Order was refunded
+        // ❌ Revoke access to the product
+        const userId = payload.meta?.custom_data?.user_id;
+        const email = attributes.user_email;
+
+        const client = await clerkClient();
+        let user = null;
+
+        if (userId) {
+          try {
+            user = await client.users.getUser(userId);
+          } catch {
+            // User not found by ID
+          }
+        }
+
+        if (!user && customerId) {
+          user = await findUserByLemonSqueezyCustomerId(customerId);
+        }
+
+        if (!user && email) {
+          const usersByEmail = await client.users.getUserList({
+            emailAddress: [email],
+          });
+          if (usersByEmail.data.length > 0) {
+            user = usersByEmail.data[0];
+          }
+        }
+
+        if (user) {
+          console.log(`[LemonSqueezy Webhook] order_refunded: Revoking access for user ${user.id}`);
+          await client.users.updateUser(user.id, {
+            publicMetadata: {
+              ...user.publicMetadata,
+              hasAccess: false,
+              subscriptionStatus: "refunded",
+            },
+          });
+        } else {
+          console.log(`[LemonSqueezy Webhook] order_refunded: No user found for customerId ${customerId} or email ${email}`);
         }
 
         break;
