@@ -12,18 +12,24 @@ export async function POST(req: NextRequest) {
   if (!body.variantId) {
     return NextResponse.json(
       { error: "Variant ID is required" },
-      { status: 400 }
+      { status: 400 },
     );
   } else if (!body.redirectUrl) {
     return NextResponse.json(
       { error: "Redirect URL is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   try {
     const { userId } = await auth();
-    const user = userId ? await currentUser() : null;
+    let user = userId ? await currentUser() : null;
+
+    // Retry once if user data isn't fully available yet (can happen right after sign-up)
+    if (userId && !user?.emailAddresses?.[0]?.emailAddress) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      user = await currentUser();
+    }
 
     // Get DataFast cookies for revenue attribution
     const cookieStore = await cookies();
@@ -48,7 +54,7 @@ export async function POST(req: NextRequest) {
     if (!checkoutURL) {
       return NextResponse.json(
         { error: "Failed to create checkout" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -57,7 +63,7 @@ export async function POST(req: NextRequest) {
     console.error(e);
     return NextResponse.json(
       { error: e instanceof Error ? e.message : "Unknown error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
