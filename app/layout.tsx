@@ -45,7 +45,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             defer
             data-website-id="dfid_NpQGvIxtvJX9l4KYrwAsi"
             data-domain="creatorcopilots.com"
-            data-allow-localhost="true"
             src="https://datafa.st/js/script.js"
             strategy="afterInteractive"
           />
