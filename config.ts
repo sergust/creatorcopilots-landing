@@ -33,7 +33,7 @@ const config = {
         variantId:
           process.env.NODE_ENV === "development"
             ? "1213979" // Replace with your sandbox variant ID
-            : "1213979", // Replace with your production variant ID
+            : "1235182", // Replace with your production variant ID
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "Starter",
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
@@ -53,7 +53,7 @@ const config = {
         variantId:
           process.env.NODE_ENV === "development"
             ? "1213975" // Replace with your sandbox variant ID
-            : "1213975", // Replace with your production variant ID
+            : "1235187", // Replace with your production variant ID
         // This plan will look different on the pricing page, it will be highlighted. You can only have one plan with isFeatured: true
         isFeatured: true,
         name: "Pro",
@@ -79,7 +79,7 @@ const config = {
     // REQUIRED — Email 'From' field to be used when sending magic login links
     fromNoReply: `Reels Copilot <noreply@creatorcopilots.com>`,
     // REQUIRED — Email 'From' field to be used when sending other emails, like abandoned carts, updates etc..
-    fromAdmin: `Reels Copilot <hello@creatorcopilots.com>`,
+    fromAdmin: `Reels Copilot <support@creatorcopilots.com>`,
     // Email shown to customer if they need support. Leave empty if not needed => if empty, set up Crisp above, otherwise you won't be able to offer customer support."
     supportEmail: "support@creatorcopilots.com",
   },
