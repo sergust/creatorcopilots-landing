@@ -4,10 +4,32 @@ import { ReactNode, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { Crisp } from "crisp-sdk-web";
+import LogRocket from "logrocket";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "react-hot-toast";
 import { Tooltip } from "react-tooltip";
 import config from "@/config";
+
+// Initialize LogRocket
+if (typeof window !== "undefined") {
+  LogRocket.init("nx5skm/creator-copilots");
+}
+
+// LogRocket user identification
+const LogRocketIdentify = (): null => {
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (user) {
+      LogRocket.identify(user.id, {
+        name: user.fullName || user.firstName || "",
+        email: user.primaryEmailAddress?.emailAddress || "",
+      });
+    }
+  }, [user]);
+
+  return null;
+};
 
 // Crisp customer chat support:
 // This component uses useUser() hook to access the current user
@@ -73,6 +95,9 @@ const ClientLayout = ({ children }: { children: ReactNode }) => {
 
       {/* Set Crisp customer chat support */}
       <CrispChat />
+
+      {/* Identify users in LogRocket */}
+      <LogRocketIdentify />
     </>
   );
 };

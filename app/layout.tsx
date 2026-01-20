@@ -30,6 +30,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <ClerkProvider
       allowedRedirectOrigins={[
         config.appUrl,
+        "https://creatorcopilots.com",
         "http://localhost:3001", // For local development
         "http://localhost:3000", // For local development
       ]}
