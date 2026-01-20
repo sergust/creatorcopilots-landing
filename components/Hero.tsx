@@ -14,10 +14,8 @@ const Hero = () => {
   const router = useRouter();
 
   const handleGetStarted = () => {
-    if (!isLoaded) return;
-
-    if (!isSignedIn) {
-      // Not logged in - go to pricing
+    // If auth is still loading or user not signed in, go to pricing
+    if (!isLoaded || !isSignedIn) {
       router.push("/#pricing");
       return;
     }
@@ -77,30 +75,23 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <button
             onClick={handleGetStarted}
-            disabled={!isLoaded}
             className="btn btn-primary btn-lg px-8 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all"
           >
-            {!isLoaded ? (
-              <span className="loading loading-spinner loading-sm"></span>
-            ) : (
-              <>
-                Get Started
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-                  />
-                </svg>
-              </>
-            )}
+            Get Started
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+              />
+            </svg>
           </button>
         </div>
 
