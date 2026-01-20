@@ -61,7 +61,7 @@ const config = {
         price: 59,
         priceAnchor: 99,
         features: [
-          { name: "Everything in Starter" },
+          { name: "Unlimited reel analyses" },
           { name: "Advanced AI chat analysis" },
           { name: "Exact script rewrites" },
           { name: "Priority support" },
