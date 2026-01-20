@@ -11,6 +11,8 @@ interface CreateLemonSqueezyCheckoutParams {
   discountCode?: string;
   userId?: string;
   email?: string;
+  datafastVisitorId?: string;
+  datafastSessionId?: string;
 }
 
 interface CreateCustomerPortalParams {
@@ -25,6 +27,8 @@ export const createLemonSqueezyCheckout = async ({
   redirectUrl,
   variantId,
   discountCode,
+  datafastVisitorId,
+  datafastSessionId,
 }: CreateLemonSqueezyCheckoutParams): Promise<string | null> => {
   try {
     lemonSqueezySetup({ apiKey: process.env.LEMONSQUEEZY_API_KEY! });
@@ -40,6 +44,8 @@ export const createLemonSqueezyCheckout = async ({
         email,
         custom: {
           userId,
+          datafast_visitor_id: datafastVisitorId,
+          datafast_session_id: datafastSessionId,
         },
       },
     };
