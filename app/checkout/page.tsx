@@ -17,10 +17,10 @@ function CheckoutContent() {
   useEffect(() => {
     if (!isLoaded) return;
 
-    // Not signed in - redirect to sign-in
+    // Not signed in - redirect to sign-up
     if (!isSignedIn) {
       router.push(
-        `/sign-in?redirect_url=${encodeURIComponent(`/checkout?variant=${variantId}`)}`
+        `/sign-up?redirect_url=${encodeURIComponent(`/checkout?variant=${variantId}`)}`
       );
       return;
     }
