@@ -18,7 +18,7 @@ const config = {
   // REQUIRED — The URL to the main application
   appUrl: "https://app.creatorcopilots.com",
   // Payment processing mode: "auto" (Lemon Squeezy) or "manual" (email notifications)
-  paymentProcessing: "manual",
+  paymentProcessing: "auto",
   crisp: {
     // Crisp website ID. IF YOU DON'T USE CRISP: just remove this => Then add a support email in this config file (resend.supportEmail) otherwise customer support won't work.
     id: "",
