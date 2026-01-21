@@ -76,6 +76,7 @@ const Hero = () => {
           <button
             onClick={handleGetStarted}
             className="btn btn-primary btn-lg px-8 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all"
+            data-fast-goal="hero_cta_click"
           >
             Get Started
             <svg

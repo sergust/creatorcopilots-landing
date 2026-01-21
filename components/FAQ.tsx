@@ -78,6 +78,7 @@ const FaqItem = ({ item }: { item: FAQItemProps }) => {
           setIsOpen(!isOpen);
         }}
         aria-expanded={isOpen}
+        data-fast-goal="faq_expand"
       >
         <span
           className={`flex-1 text-base-content ${isOpen ? "text-primary" : ""}`}
@@ -127,7 +128,7 @@ const FaqItem = ({ item }: { item: FAQItemProps }) => {
 
 const FAQ = () => {
   return (
-    <section className="bg-base-200" id="faq">
+    <section className="bg-base-200" id="faq" data-fast-scroll="scroll_to_faq">
       <div className="py-24 px-8 max-w-7xl mx-auto flex flex-col md:flex-row gap-12">
         <div className="flex flex-col text-left basis-1/2">
           <p className="inline-block font-semibold text-primary mb-4">FAQ</p>

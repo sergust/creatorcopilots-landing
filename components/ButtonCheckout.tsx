@@ -8,11 +8,12 @@ import config from "@/config";
 
 interface ButtonCheckoutProps {
   variantId: string;
+  planName?: string;
 }
 
 // This component is used to create Lemon Squeezy Checkout Sessions
 // If user is not authenticated, redirects to /checkout page which handles sign-in flow
-const ButtonCheckout = ({ variantId }: ButtonCheckoutProps) => {
+const ButtonCheckout = ({ variantId, planName }: ButtonCheckoutProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { isSignedIn, isLoaded } = useUser();
   const router = useRouter();
@@ -49,11 +50,17 @@ const ButtonCheckout = ({ variantId }: ButtonCheckoutProps) => {
     }
   };
 
+  // Generate goal name based on plan
+  const goalName = planName
+    ? `checkout_${planName.toLowerCase()}`
+    : "checkout_click";
+
   return (
     <button
       className="btn btn-primary btn-block group"
       onClick={() => handlePayment()}
       disabled={!isLoaded}
+      data-fast-goal={goalName}
     >
       {isLoading || !isLoaded ? (
         <span className="loading loading-spinner loading-xs"></span>

@@ -57,11 +57,16 @@ const Footer = () => {
                     target="_blank"
                     className="link link-hover"
                     aria-label="Contact Support"
+                    data-fast-goal="footer_support_click"
                   >
                     Support
                   </a>
                 )}
-                <Link href="/#pricing" className="link link-hover">
+                <Link
+                  href="/#pricing"
+                  className="link link-hover"
+                  data-fast-goal="footer_pricing_click"
+                >
                   Pricing
                 </Link>
               </div>
@@ -73,10 +78,18 @@ const Footer = () => {
               </div>
 
               <div className="flex flex-col justify-center items-center md:items-start gap-2 mb-10 text-sm">
-                <Link href="/tos" className="link link-hover">
+                <Link
+                  href="/tos"
+                  className="link link-hover"
+                  data-fast-goal="footer_tos_click"
+                >
                   Terms of services
                 </Link>
-                <Link href="/privacy-policy" className="link link-hover">
+                <Link
+                  href="/privacy-policy"
+                  className="link link-hover"
+                  data-fast-goal="footer_privacy_click"
+                >
                   Privacy policy
                 </Link>
               </div>

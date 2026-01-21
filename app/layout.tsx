@@ -41,6 +41,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         className={outfit.variable}
       >
         <head>
+          {/* Datafast queue script - captures events before main script loads */}
+          <Script id="datafast-queue" strategy="beforeInteractive">
+            {`window.datafast = window.datafast || function() {
+              window.datafast.q = window.datafast.q || [];
+              window.datafast.q.push(arguments);
+            };`}
+          </Script>
           <Script
             defer
             data-website-id="dfid_NpQGvIxtvJX9l4KYrwAsi"

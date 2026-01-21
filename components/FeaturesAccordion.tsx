@@ -136,6 +136,7 @@ const Item = ({
           setFeatureSelected();
         }}
         aria-expanded={isOpen}
+        data-fast-goal="feature_select"
       >
         {/* Icon */}
         <div
@@ -244,6 +245,7 @@ const FeaturesAccordion = () => {
     <section
       className="relative py-24 md:py-32 space-y-24 md:space-y-32 max-w-7xl mx-auto bg-base-100 overflow-hidden"
       id="features"
+      data-fast-scroll="scroll_to_features"
     >
       {/* Background decorations */}
       <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-primary/5 blur-3xl -z-10 pointer-events-none" />

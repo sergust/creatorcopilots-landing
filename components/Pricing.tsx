@@ -7,7 +7,11 @@ import ButtonCheckout from "./ButtonCheckout";
 
 const Pricing = () => {
   return (
-    <section className="bg-base-200 overflow-hidden" id="pricing">
+    <section
+      className="bg-base-200 overflow-hidden"
+      id="pricing"
+      data-fast-scroll="scroll_to_pricing"
+    >
       <div className="py-24 px-8 max-w-5xl mx-auto">
         <div className="flex flex-col text-center w-full mb-20">
           <p className="font-medium text-primary mb-8">Pricing</p>
@@ -90,7 +94,7 @@ const Pricing = () => {
                   </ul>
                 )}
                 <div className="space-y-2">
-                  <ButtonCheckout variantId={plan.variantId} />
+                  <ButtonCheckout variantId={plan.variantId} planName={plan.name} />
                 </div>
               </div>
             </div>

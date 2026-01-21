@@ -11,18 +11,22 @@ import config from "@/config";
 const links: {
   href: string;
   label: string;
+  goalName: string;
 }[] = [
   {
     href: "/#features",
     label: "How It Works",
+    goalName: "nav_features_click",
   },
   {
     href: "/#pricing",
     label: "Pricing",
+    goalName: "nav_pricing_click",
   },
   {
     href: "/#faq",
     label: "FAQ",
+    goalName: "nav_faq_click",
   },
 ];
 
@@ -89,6 +93,7 @@ const Header = () => {
               key={link.href}
               className="link link-hover"
               title={link.label}
+              data-fast-goal={link.goalName}
             >
               {link.label}
             </Link>
@@ -147,6 +152,7 @@ const Header = () => {
                     key={link.href}
                     className="link link-hover"
                     title={link.label}
+                    data-fast-goal={link.goalName}
                   >
                     {link.label}
                   </Link>

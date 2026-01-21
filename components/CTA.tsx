@@ -34,7 +34,10 @@ const CTA = () => {
   };
 
   return (
-    <section className="relative hero overflow-hidden min-h-screen">
+    <section
+      className="relative hero overflow-hidden min-h-screen"
+      data-fast-scroll="scroll_to_cta"
+    >
       <Image
         src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
         alt="Content creator background"
@@ -63,6 +66,7 @@ const CTA = () => {
           <button
             onClick={handleClick}
             className="btn btn-gradient btn-lg px-10 group shadow-lg hover:shadow-xl transition-all"
+            data-fast-goal="final_cta_click"
           >
             Upload Your Reel
             <svg

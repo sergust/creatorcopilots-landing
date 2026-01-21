@@ -1,7 +1,10 @@
 // Problem Agitation: Dig into the emotional pain of creators who can't figure out why their reels underperform
 const Problem = () => {
   return (
-    <section className="bg-neutral text-neutral-content overflow-hidden relative">
+    <section
+      className="bg-neutral text-neutral-content overflow-hidden relative"
+      data-fast-scroll="scroll_to_problem"
+    >
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-1/2 -right-1/4 w-200 h-200 rounded-full bg-error/3 blur-3xl" />

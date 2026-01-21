@@ -165,7 +165,10 @@ const ButtonSignin = ({
       </SignedIn>
       <SignedOut>
         <SignInButton mode="modal" forceRedirectUrl={config.appUrl}>
-          <button className={`btn ${extraStyle ? extraStyle : ""}`}>
+          <button
+            className={`btn ${extraStyle ? extraStyle : ""}`}
+            data-fast-goal="header_signin_click"
+          >
             {text}
           </button>
         </SignInButton>

@@ -1,6 +1,7 @@
 import config from "@/config";
 import { clerkClient } from "@clerk/nextjs/server";
 import { sendEmail } from "@/libs/resend";
+import { trackDatafastEvent, DatafastEvents } from "@/libs/datafast";
 import crypto from "crypto";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -282,6 +283,21 @@ export async function POST(req: NextRequest) {
           }
         }
 
+        // Track payment success in Datafast
+        const visitorId = payload.meta?.custom_data?.datafast_visitor_id;
+        if (visitorId) {
+          await trackDatafastEvent({
+            visitorId,
+            name: DatafastEvents.PAYMENT_SUCCESS,
+            metadata: {
+              plan: plan.name.toLowerCase(),
+              amount: String(plan.price),
+              currency: "USD",
+              email: email || "",
+            },
+          });
+        }
+
         break;
       }
 
@@ -436,22 +452,34 @@ export async function POST(req: NextRequest) {
         // ❌ Revoke access to the product (or keep until ends_at)
         if (!customerId) break;
 
-        const user = await findUserByLemonSqueezyCustomerId(customerId);
+        const cancelledUser = await findUserByLemonSqueezyCustomerId(customerId);
 
-        if (user) {
-          console.log(`[LemonSqueezy Webhook] subscription_cancelled: Updating user ${user.id}`);
+        if (cancelledUser) {
+          console.log(`[LemonSqueezy Webhook] subscription_cancelled: Updating user ${cancelledUser.id}`);
           const client = await clerkClient();
-          await client.users.updateUser(user.id, {
+          await client.users.updateUser(cancelledUser.id, {
             publicMetadata: {
-              ...user.publicMetadata,
+              ...cancelledUser.publicMetadata,
               hasAccess: false,
               subscriptionStatus: "cancelled",
             },
             privateMetadata: {
-              ...user.privateMetadata,
+              ...cancelledUser.privateMetadata,
               endsAt: attributes.ends_at,
             },
           });
+
+          // Track subscription cancellation in Datafast
+          const cancelVisitorId = payload.meta?.custom_data?.datafast_visitor_id;
+          if (cancelVisitorId) {
+            await trackDatafastEvent({
+              visitorId: cancelVisitorId,
+              name: DatafastEvents.SUBSCRIPTION_CANCELLED,
+              metadata: {
+                plan: (cancelledUser.publicMetadata as PublicSubscriptionMetadata)?.planName?.toLowerCase() || "",
+              },
+            });
+          }
         } else {
           console.log(`[LemonSqueezy Webhook] subscription_cancelled: No user found for customerId ${customerId}`);
         }
@@ -605,6 +633,18 @@ export async function POST(req: NextRequest) {
               subscriptionStatus: "refunded",
             },
           });
+
+          // Track refund in Datafast
+          const refundVisitorId = payload.meta?.custom_data?.datafast_visitor_id;
+          if (refundVisitorId) {
+            await trackDatafastEvent({
+              visitorId: refundVisitorId,
+              name: DatafastEvents.REFUND_PROCESSED,
+              metadata: {
+                plan: (user.publicMetadata as PublicSubscriptionMetadata)?.planName?.toLowerCase() || "",
+              },
+            });
+          }
         } else {
           console.log(`[LemonSqueezy Webhook] order_refunded: No user found for customerId ${customerId} or email ${email}`);
         }
