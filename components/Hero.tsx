@@ -4,32 +4,19 @@ import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import config from "@/config";
 
-interface UserPublicMetadata {
-  hasAccess?: boolean;
-  [key: string]: unknown;
-}
-
 const Hero = () => {
-  const { user, isSignedIn, isLoaded } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
   const router = useRouter();
 
   const handleGetStarted = () => {
-    // If auth is still loading or user not signed in, go to pricing
+    // If auth is still loading or user not signed in, go to sign-up
     if (!isLoaded || !isSignedIn) {
-      router.push("/#pricing");
+      router.push("/sign-up");
       return;
     }
 
-    // Check if user has subscription access
-    const hasAccess = (user?.publicMetadata as UserPublicMetadata)?.hasAccess;
-
-    if (hasAccess) {
-      // Logged in and subscribed - go to app
-      window.location.href = config.appUrl;
-    } else {
-      // Logged in but not subscribed - go to pricing
-      router.push("/#pricing");
-    }
+    // User is signed in - redirect to app
+    window.location.href = config.appUrl;
   };
 
   return (
