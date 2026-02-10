@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import axios from 'axios';
 
 // Use this if you want to make a call to OpenAI GPT-4 for instance. userId is used to identify the user on openAI side.
@@ -9,10 +10,7 @@ export const sendOpenAi = async (
 ) => {
   const url = 'https://api.openai.com/v1/chat/completions';
 
-  console.log('Ask GPT >>>');
-  messages.map((m) =>
-    console.log(' - ' + m.role.toUpperCase() + ': ' + m.content)
-  );
+  Sentry.logger.debug("OpenAI request", { model: "gpt-4", message_count: messages.length, max_tokens: max });
 
   const body = JSON.stringify({
     model: 'gpt-4',
@@ -35,21 +33,16 @@ export const sendOpenAi = async (
     const answer = res.data.choices[0].message.content;
     const usage = res?.data?.usage;
 
-    console.log('>>> ' + answer);
-    console.log(
-      'TOKENS USED: ' +
-        usage?.total_tokens +
-        ' (prompt: ' +
-        usage?.prompt_tokens +
-        ' / response: ' +
-        usage?.completion_tokens +
-        ')'
-    );
-    console.log('\n');
+    Sentry.logger.info("OpenAI response received", {
+      total_tokens: usage?.total_tokens,
+      prompt_tokens: usage?.prompt_tokens,
+      completion_tokens: usage?.completion_tokens,
+    });
 
     return answer;
-  } catch (e) {
-    console.error('GPT Error: ' + e?.response?.status, e?.response?.data);
+  } catch (e: any) {
+    Sentry.logger.error("OpenAI request failed", { status: e?.response?.status, error_data: JSON.stringify(e?.response?.data) });
+    Sentry.captureException(e);
     return null;
   }
 };

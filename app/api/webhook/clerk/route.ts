@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { headers } from "next/headers";
 import { trackDatafastEvent, DatafastEvents } from "@/libs/datafast";
 
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
 
   // In production, webhook secret is required
   if (!WEBHOOK_SECRET && process.env.NODE_ENV === "production") {
-    console.error("[Clerk Webhook] Missing CLERK_WEBHOOK_SECRET");
+    Sentry.logger.error("Missing CLERK_WEBHOOK_SECRET");
     return new Response("Webhook secret not configured", { status: 500 });
   }
 
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
   if (!svix_id || !svix_timestamp || !svix_signature) {
     // Allow in development without headers for testing
     if (process.env.NODE_ENV !== "development") {
-      console.error("[Clerk Webhook] Missing svix headers");
+      Sentry.logger.error("Missing svix headers");
       return new Response("Missing webhook headers", { status: 400 });
     }
   }
@@ -62,7 +63,7 @@ export async function POST(req: Request) {
   const evt = payload as ClerkWebhookEvent;
   const eventType = evt.type;
 
-  console.log(`[Clerk Webhook] Received event: ${eventType}`);
+  Sentry.logger.info("Clerk webhook event received", { event_type: eventType });
 
   try {
     switch (eventType) {
@@ -70,7 +71,7 @@ export async function POST(req: Request) {
         const { id, email_addresses, first_name, last_name } = (evt as ClerkUserCreatedEvent).data;
         const primaryEmail = email_addresses?.[0]?.email_address;
 
-        console.log(`[Clerk Webhook] user.created: ${id}, email: ${primaryEmail}`);
+        Sentry.logger.info("user.created", { user_id: id, email: primaryEmail });
 
         // Track user signup in Datafast
         // The visitor ID needs to be passed during signup via unsafe_metadata
@@ -86,19 +87,20 @@ export async function POST(req: Request) {
               last_name: last_name || "",
             },
           });
-          console.log(`[Clerk Webhook] Tracked user_signup event for ${primaryEmail}`);
+          Sentry.logger.info("Tracked user_signup event", { email: primaryEmail });
         } else {
-          console.log(`[Clerk Webhook] No visitor ID available for tracking user_signup`);
+          Sentry.logger.debug("No visitor ID available for tracking user_signup");
         }
 
         break;
       }
 
       default:
-        console.log(`[Clerk Webhook] Unhandled event type: ${eventType}`);
+        Sentry.logger.debug("Unhandled Clerk event type", { event_type: eventType });
     }
   } catch (error) {
-    console.error(`[Clerk Webhook] Error processing ${eventType}:`, error);
+    Sentry.logger.error("Clerk webhook processing failed", { event_type: eventType });
+    Sentry.captureException(error);
     return new Response("Webhook processing failed", { status: 500 });
   }
 

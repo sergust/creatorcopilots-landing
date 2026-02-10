@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { createLemonSqueezyCheckout } from "@/libs/lemonsqueezy";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
@@ -25,13 +26,13 @@ export async function POST(req: NextRequest) {
     const { userId } = await auth();
     let user = userId ? await currentUser() : null;
 
-    console.log(`[create-checkout] userId: ${userId}, userEmail: ${user?.emailAddresses?.[0]?.emailAddress}`);
+    Sentry.logger.info("Creating checkout", { user_id: userId, email: user?.emailAddresses?.[0]?.emailAddress });
 
     // Retry once if user data isn't fully available yet (can happen right after sign-up)
     if (userId && !user?.emailAddresses?.[0]?.emailAddress) {
       await new Promise((resolve) => setTimeout(resolve, 100));
       user = await currentUser();
-      console.log(`[create-checkout] After retry - userId: ${userId}, userEmail: ${user?.emailAddresses?.[0]?.emailAddress}`);
+      Sentry.logger.debug("Retry fetching user data", { user_id: userId, email: user?.emailAddresses?.[0]?.emailAddress });
     }
 
     // Get DataFast cookies for revenue attribution
@@ -69,7 +70,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: checkoutURL });
   } catch (e) {
-    console.error(e);
+    Sentry.logger.error("Checkout creation failed", { error_message: e instanceof Error ? e.message : "Unknown error" });
+    Sentry.captureException(e);
     return NextResponse.json(
       { error: e instanceof Error ? e.message : "Unknown error" },
       { status: 500 },

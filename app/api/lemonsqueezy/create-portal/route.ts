@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { NextResponse } from "next/server";
 import { createCustomerPortal } from "@/libs/lemonsqueezy";
 import { auth, currentUser } from "@clerk/nextjs/server";
@@ -38,7 +39,8 @@ export async function POST() {
 
     return NextResponse.json({ url });
   } catch (e) {
-    console.error(e);
+    Sentry.logger.error("Portal session creation failed", { error_message: e instanceof Error ? e.message : "Unknown error" });
+    Sentry.captureException(e);
     return NextResponse.json(
       { error: e instanceof Error ? e.message : "Unknown error" },
       { status: 500 }

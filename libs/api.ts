@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import config from "@/config";
@@ -32,7 +33,7 @@ apiClient.interceptors.response.use(
     error.message =
       typeof message === "string" ? message : JSON.stringify(message);
 
-    console.error(error.message);
+    Sentry.logger.error("API request failed", { error_message: error.message, status: error.response?.status });
 
     // Automatically display errors to the user
     if (error.message) {

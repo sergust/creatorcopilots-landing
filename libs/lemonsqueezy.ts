@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import {
   createCheckout,
   getCustomer,
@@ -53,7 +54,7 @@ export const createLemonSqueezyCheckout = async ({
       },
     };
 
-    console.log(`[lemonsqueezy] Creating checkout with custom data:`, JSON.stringify(newCheckout.checkoutData?.custom));
+    Sentry.logger.debug("Creating LemonSqueezy checkout", { custom_data: JSON.stringify(newCheckout.checkoutData?.custom) });
 
     const { data, error } = await createCheckout(
       storeId,
@@ -67,7 +68,8 @@ export const createLemonSqueezyCheckout = async ({
 
     return data.data.attributes.url;
   } catch (e) {
-    console.error(e);
+    Sentry.logger.error("LemonSqueezy checkout creation failed", { error_message: (e as Error).message });
+    Sentry.captureException(e);
     return null;
   }
 };
@@ -87,7 +89,8 @@ export const createCustomerPortal = async ({
 
     return data.data.attributes.urls.customer_portal;
   } catch (error) {
-    console.error(error);
+    Sentry.logger.error("LemonSqueezy customer portal creation failed", { error_message: (error as Error).message });
+    Sentry.captureException(error);
     return null;
   }
 };

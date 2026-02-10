@@ -7,6 +7,8 @@
  * API Documentation: https://datafa.st/docs/api-create-goal
  */
 
+import * as Sentry from "@sentry/nextjs";
+
 const DATAFAST_API_URL = "https://datafa.st/api/v1/goals";
 const DATAFAST_API_KEY = process.env.DATAFAST_API_KEY;
 
@@ -58,16 +60,13 @@ export async function trackDatafastEvent(
 
   // Skip if API key is not configured
   if (!DATAFAST_API_KEY) {
-    console.warn("[Datafast] API key not configured, skipping event tracking");
+    Sentry.logger.warn("Datafast API key not configured, skipping event tracking");
     return null;
   }
 
   // Skip if visitor ID is not provided (visitor hasn't had a pageview yet)
   if (!visitorId) {
-    console.warn(
-      "[Datafast] No visitor ID provided, skipping event tracking for:",
-      name
-    );
+    Sentry.logger.warn("No Datafast visitor ID, skipping event tracking", { event_name: name });
     return null;
   }
 
@@ -88,13 +87,14 @@ export async function trackDatafastEvent(
     const data = (await response.json()) as DatafastResponse;
 
     if (!response.ok) {
-      console.error("[Datafast] Error tracking event:", name, data);
+      Sentry.logger.error("Datafast event tracking failed", { event_name: name, status: response.status });
       return data;
     }
 
     return data;
   } catch (error) {
-    console.error("[Datafast] Failed to track event:", name, error);
+    Sentry.logger.error("Datafast request failed", { event_name: name, error_message: (error as Error).message });
+    Sentry.captureException(error);
     return null;
   }
 }

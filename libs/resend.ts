@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { Resend } from "resend";
 import config from "@/config";
 
@@ -30,7 +31,8 @@ export const sendEmail = async ({
   });
 
   if (error) {
-    console.error("Error sending email:", error.message);
+    Sentry.logger.error("Email sending failed", { error_message: error.message, to: Array.isArray(to) ? to.join(",") : to, subject });
+    Sentry.captureException(error);
     throw error;
   }
 

@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import config from "@/config";
 import { clerkClient } from "@clerk/nextjs/server";
 import { sendEmail } from "@/libs/resend";
@@ -78,7 +79,7 @@ async function findOrCreateClerkUser(email: string, customerId: string) {
     } as PrivateSubscriptionMetadata,
   });
 
-  console.log(`[LemonSqueezy Webhook] Created new Clerk user ${newUser.id} for email ${email}`);
+  Sentry.logger.info("Created new Clerk user from payment", { user_id: newUser.id, email });
   return newUser;
 }
 
@@ -173,7 +174,7 @@ The ${config.appName} Team`,
     `,
   });
 
-  console.log(`[LemonSqueezy Webhook] Welcome email sent to ${email}`);
+  Sentry.logger.info("Welcome email sent", { email });
 }
 
 // This is where we receive Lemon Squeezy webhook events
@@ -193,7 +194,7 @@ export async function POST(req: NextRequest) {
 
   // Verify the signature
   if (signature.length === 0 || !crypto.timingSafeEqual(digest, signature)) {
-    console.error("[LemonSqueezy Webhook] Invalid signature");
+    Sentry.logger.error("Invalid webhook signature");
     return NextResponse.json({ error: "Invalid signature." }, { status: 400 });
   }
 
@@ -204,7 +205,7 @@ export async function POST(req: NextRequest) {
   const attributes = payload.data.attributes;
   const customerId = attributes.customer_id?.toString();
 
-  console.log(`[LemonSqueezy Webhook] Received event: ${eventName}, customerId: ${customerId}`);
+  Sentry.logger.info("Webhook event received", { event_name: eventName, customer_id: customerId });
 
   try {
     switch (eventName) {
@@ -222,7 +223,7 @@ export async function POST(req: NextRequest) {
         );
 
         if (!plan) {
-          console.log(`[LemonSqueezy Webhook] order_created: No matching plan for variantId ${variantId}`);
+          Sentry.logger.warn("order_created: No matching plan found", { variant_id: variantId });
           break;
         }
 
@@ -246,7 +247,7 @@ export async function POST(req: NextRequest) {
 
         if (userId) {
           // User was logged in during checkout - update their metadata
-          console.log(`[LemonSqueezy Webhook] order_created: Updating existing user ${userId}`);
+          Sentry.logger.info("order_created: Updating existing user", { user_id: userId });
           const updatedUser = await client.users.updateUser(userId, {
             publicMetadata: { ...publicMetadata },
             privateMetadata: { ...privateMetadata },
@@ -255,7 +256,7 @@ export async function POST(req: NextRequest) {
         } else if (email) {
           // User was not logged in - find or create user
           const user = await findOrCreateClerkUser(email, customerId!);
-          console.log(`[LemonSqueezy Webhook] order_created: Updating user ${user.id} found by email ${email}`);
+          Sentry.logger.info("order_created: Updating user found by email", { user_id: user.id, email });
           await client.users.updateUser(user.id, {
             publicMetadata: {
               ...user.publicMetadata,
@@ -278,7 +279,8 @@ export async function POST(req: NextRequest) {
               planName: plan.name,
             });
           } catch (emailError) {
-            console.error(`[LemonSqueezy Webhook] Failed to send welcome email:`, emailError);
+            Sentry.logger.error("Failed to send welcome email", { email });
+            Sentry.captureException(emailError);
             // Don't throw - email failure shouldn't fail the webhook
           }
         }
@@ -344,14 +346,14 @@ export async function POST(req: NextRequest) {
         };
 
         if (userId) {
-          console.log(`[LemonSqueezy Webhook] subscription_created: Updating user ${userId}`);
+          Sentry.logger.info("subscription_created: Updating user", { user_id: userId });
           await client.users.updateUser(userId, {
             publicMetadata: { ...publicMetadata },
             privateMetadata: { ...privateMetadata },
           });
         } else if (email) {
           const user = await findOrCreateClerkUser(email, customerId);
-          console.log(`[LemonSqueezy Webhook] subscription_created: Updating user ${user.id} found by email`);
+          Sentry.logger.info("subscription_created: Updating user found by email", { user_id: user.id });
           await client.users.updateUser(user.id, {
             publicMetadata: {
               ...user.publicMetadata,
@@ -375,7 +377,7 @@ export async function POST(req: NextRequest) {
         const user = await findUserByLemonSqueezyCustomerId(customerId);
 
         if (user) {
-          console.log(`[LemonSqueezy Webhook] subscription_payment_success: Updating user ${user.id}`);
+          Sentry.logger.info("subscription_payment_success: Updating user", { user_id: user.id });
           const client = await clerkClient();
           await client.users.updateUser(user.id, {
             publicMetadata: {
@@ -391,7 +393,7 @@ export async function POST(req: NextRequest) {
             },
           });
         } else {
-          console.log(`[LemonSqueezy Webhook] subscription_payment_success: No user found for customerId ${customerId}`);
+          Sentry.logger.warn("subscription_payment_success: No user found", { customer_id: customerId });
         }
 
         break;
@@ -412,7 +414,7 @@ export async function POST(req: NextRequest) {
         const user = await findUserByLemonSqueezyCustomerId(customerId);
 
         if (user) {
-          console.log(`[LemonSqueezy Webhook] subscription_updated: Updating user ${user.id}, status: ${subscriptionStatus}`);
+          Sentry.logger.info("subscription_updated: Updating user", { user_id: user.id, subscription_status: subscriptionStatus });
           const client = await clerkClient();
           // Determine access based on subscription status
           // Active, on_trial = has access
@@ -441,7 +443,7 @@ export async function POST(req: NextRequest) {
             },
           });
         } else {
-          console.log(`[LemonSqueezy Webhook] subscription_updated: No user found for customerId ${customerId}`);
+          Sentry.logger.warn("subscription_updated: No user found", { customer_id: customerId });
         }
 
         break;
@@ -455,7 +457,7 @@ export async function POST(req: NextRequest) {
         const cancelledUser = await findUserByLemonSqueezyCustomerId(customerId);
 
         if (cancelledUser) {
-          console.log(`[LemonSqueezy Webhook] subscription_cancelled: Updating user ${cancelledUser.id}`);
+          Sentry.logger.info("subscription_cancelled: Revoking access", { user_id: cancelledUser.id });
           const client = await clerkClient();
           await client.users.updateUser(cancelledUser.id, {
             publicMetadata: {
@@ -481,7 +483,7 @@ export async function POST(req: NextRequest) {
             });
           }
         } else {
-          console.log(`[LemonSqueezy Webhook] subscription_cancelled: No user found for customerId ${customerId}`);
+          Sentry.logger.warn("subscription_cancelled: No user found", { customer_id: customerId });
         }
 
         break;
@@ -495,7 +497,7 @@ export async function POST(req: NextRequest) {
         const user = await findUserByLemonSqueezyCustomerId(customerId);
 
         if (user) {
-          console.log(`[LemonSqueezy Webhook] subscription_expired: Updating user ${user.id}`);
+          Sentry.logger.info("subscription_expired: Revoking access", { user_id: user.id });
           const client = await clerkClient();
           await client.users.updateUser(user.id, {
             publicMetadata: {
@@ -510,7 +512,7 @@ export async function POST(req: NextRequest) {
             },
           });
         } else {
-          console.log(`[LemonSqueezy Webhook] subscription_expired: No user found for customerId ${customerId}`);
+          Sentry.logger.warn("subscription_expired: No user found", { customer_id: customerId });
         }
 
         break;
@@ -524,7 +526,7 @@ export async function POST(req: NextRequest) {
         const user = await findUserByLemonSqueezyCustomerId(customerId);
 
         if (user) {
-          console.log(`[LemonSqueezy Webhook] subscription_payment_failed: Updating user ${user.id}`);
+          Sentry.logger.warn("subscription_payment_failed: Payment failed", { user_id: user.id });
           const client = await clerkClient();
           await client.users.updateUser(user.id, {
             publicMetadata: {
@@ -533,7 +535,7 @@ export async function POST(req: NextRequest) {
             },
           });
         } else {
-          console.log(`[LemonSqueezy Webhook] subscription_payment_failed: No user found for customerId ${customerId}`);
+          Sentry.logger.warn("subscription_payment_failed: No user found", { customer_id: customerId });
         }
 
         break;
@@ -546,7 +548,7 @@ export async function POST(req: NextRequest) {
         const user = await findUserByLemonSqueezyCustomerId(customerId);
 
         if (user) {
-          console.log(`[LemonSqueezy Webhook] subscription_paused: Updating user ${user.id}`);
+          Sentry.logger.info("subscription_paused: Pausing access", { user_id: user.id });
           const client = await clerkClient();
           await client.users.updateUser(user.id, {
             publicMetadata: {
@@ -561,7 +563,7 @@ export async function POST(req: NextRequest) {
             },
           });
         } else {
-          console.log(`[LemonSqueezy Webhook] subscription_paused: No user found for customerId ${customerId}`);
+          Sentry.logger.warn("subscription_paused: No user found", { customer_id: customerId });
         }
 
         break;
@@ -574,7 +576,7 @@ export async function POST(req: NextRequest) {
         const user = await findUserByLemonSqueezyCustomerId(customerId);
 
         if (user) {
-          console.log(`[LemonSqueezy Webhook] subscription_resumed: Updating user ${user.id}`);
+          Sentry.logger.info("subscription_resumed: Restoring access", { user_id: user.id });
           const client = await clerkClient();
           await client.users.updateUser(user.id, {
             publicMetadata: {
@@ -588,7 +590,7 @@ export async function POST(req: NextRequest) {
             },
           });
         } else {
-          console.log(`[LemonSqueezy Webhook] subscription_resumed: No user found for customerId ${customerId}`);
+          Sentry.logger.warn("subscription_resumed: No user found", { customer_id: customerId });
         }
 
         break;
@@ -625,7 +627,7 @@ export async function POST(req: NextRequest) {
         }
 
         if (user) {
-          console.log(`[LemonSqueezy Webhook] order_refunded: Revoking access for user ${user.id}`);
+          Sentry.logger.info("order_refunded: Revoking access", { user_id: user.id });
           await client.users.updateUser(user.id, {
             publicMetadata: {
               ...user.publicMetadata,
@@ -646,17 +648,18 @@ export async function POST(req: NextRequest) {
             });
           }
         } else {
-          console.log(`[LemonSqueezy Webhook] order_refunded: No user found for customerId ${customerId} or email ${email}`);
+          Sentry.logger.warn("order_refunded: No user found", { customer_id: customerId, email });
         }
 
         break;
       }
 
       default:
-        console.log(`[LemonSqueezy Webhook] Unhandled event type: ${eventName}`);
+        Sentry.logger.debug("Unhandled webhook event type", { event_name: eventName });
     }
   } catch (e) {
-    console.error(`[LemonSqueezy Webhook] Error processing ${eventName}:`, (e as Error).message);
+    Sentry.logger.error("Webhook processing failed", { event_name: eventName, error_message: (e as Error).message });
+    Sentry.captureException(e);
   }
 
   return NextResponse.json({ received: true });

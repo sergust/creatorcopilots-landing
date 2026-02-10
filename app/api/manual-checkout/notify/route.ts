@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { sendEmail } from "@/libs/resend";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
@@ -213,9 +214,7 @@ The ${config.appName} Team
       `,
     });
 
-    console.log(
-      `[Manual Checkout] Notifications sent for user ${userEmail}, plan ${plan.name}`
-    );
+    Sentry.logger.info("Manual checkout notifications sent", { email: userEmail, plan_name: plan.name });
 
     return NextResponse.json({
       success: true,
@@ -225,7 +224,8 @@ The ${config.appName} Team
       },
     });
   } catch (error) {
-    console.error("Manual checkout notification error:", error);
+    Sentry.logger.error("Manual checkout notification failed", { error_message: error instanceof Error ? error.message : "Unknown error" });
+    Sentry.captureException(error);
     return NextResponse.json(
       {
         error:
