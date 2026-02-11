@@ -298,6 +298,11 @@ export async function POST(req: NextRequest) {
               email: email || "",
             },
           });
+        } else {
+          Sentry.logger.warn("order_created: No DataFast visitor ID in custom_data, skipping payment_success tracking", {
+            order_id: orderId,
+            email: email || "unknown",
+          });
         }
 
         break;

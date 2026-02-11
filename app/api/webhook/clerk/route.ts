@@ -89,7 +89,10 @@ export async function POST(req: Request) {
           });
           Sentry.logger.info("Tracked user_signup event", { email: primaryEmail });
         } else {
-          Sentry.logger.debug("No visitor ID available for tracking user_signup");
+          Sentry.logger.warn("user.created: No DataFast visitor ID in unsafe_metadata, skipping user_signup tracking", {
+            user_id: id,
+            email: primaryEmail || "unknown",
+          });
         }
 
         break;

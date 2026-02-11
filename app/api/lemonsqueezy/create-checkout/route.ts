@@ -40,6 +40,13 @@ export async function POST(req: NextRequest) {
     const datafastVisitorId = cookieStore.get("datafast_visitor_id")?.value;
     const datafastSessionId = cookieStore.get("datafast_session_id")?.value;
 
+    if (!datafastVisitorId) {
+      Sentry.logger.warn("DataFast visitor ID cookie not found during checkout creation", {
+        user_id: userId || "anonymous",
+        has_session_id: String(Boolean(datafastSessionId)),
+      });
+    }
+
     const { variantId, redirectUrl } = body;
 
     // Build user's full name from Clerk
