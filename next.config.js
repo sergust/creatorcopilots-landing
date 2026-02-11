@@ -49,7 +49,7 @@ module.exports = withSentryConfig(module.exports, {
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
   org: "sergei-ustinov",
-  project: "javascript-nextjs",
+  project: "creator-copilots-landing",
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
