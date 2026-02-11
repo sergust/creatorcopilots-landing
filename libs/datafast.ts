@@ -87,9 +87,21 @@ export async function trackDatafastEvent(
     const data = (await response.json()) as DatafastResponse;
 
     if (!response.ok) {
-      Sentry.logger.error("Datafast event tracking failed", { event_name: name, status: response.status });
+      Sentry.logger.error("Datafast event tracking failed", {
+        event_name: name,
+        status: String(response.status),
+        response: JSON.stringify(data),
+        visitor_id: visitorId,
+      });
       return data;
     }
+
+    Sentry.logger.info("Datafast event tracked successfully", {
+      event_name: name,
+      visitor_id: visitorId,
+      metadata: JSON.stringify(metadata || {}),
+      response: JSON.stringify(data),
+    });
 
     return data;
   } catch (error) {
