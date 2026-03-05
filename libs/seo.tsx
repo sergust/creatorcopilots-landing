@@ -23,7 +23,14 @@ export const getSEOTags = ({
     // up to 160 characters (how does your app help the user?)
     description: description || config.appDescription,
     // some keywords separated by commas. by default it will be your app name
-    keywords: keywords || [config.appName],
+    keywords: keywords || [
+      config.appName,
+      "instagram reels analysis",
+      "reel retention graph",
+      "reels drop-off analysis",
+      "instagram creator tools",
+      "why reels flop",
+    ],
     applicationName: config.appName,
     // set a base URL prefix for other fields that require a fully qualified URL (.e.g og:image: og:image: 'https://yourdomain.com/share.png' => '/share.png')
     metadataBase: new URL(
@@ -55,7 +62,7 @@ export const getSEOTags = ({
       // If you add an twitter-image.(jpg|jpeg|png|gif) image to the /app folder, you don't need the code below
       // images: [openGraph?.image || defaults.og.image],
       card: "summary_large_image",
-      creator: "@marc_louvion",
+      creator: config.twitterHandle,
     },
 
     // If a canonical URL is given, we add it. The metadataBase will turn the relative URL into a fully qualified URL
@@ -81,32 +88,36 @@ export const renderSchemaTags = () => {
       type="application/ld+json"
       dangerouslySetInnerHTML={{
         __html: JSON.stringify({
-          "@context": "http://schema.org",
+          "@context": "https://schema.org",
           "@type": "SoftwareApplication",
           name: config.appName,
           description: config.appDescription,
-          image: `https://${config.domainName}/logo.svg`,
+          image: `https://${config.domainName}/opengraph-image.png`,
           url: `https://${config.domainName}/`,
           author: {
             "@type": "Person",
-            name: "Marc Lou",
+            name: "Sergey Ustinov",
+            url: `https://x.com/brokkoli_borsch`,
           },
-          datePublished: "2023-08-01",
-          applicationCategory: "EducationalApplication",
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: "4.8",
-            ratingCount: "12",
-          },
+          datePublished: "2025-01-01",
+          applicationCategory: "BusinessApplication",
+          operatingSystem: "Web",
           offers: [
             {
               "@type": "Offer",
               price: "9.00",
               priceCurrency: "USD",
+              name: "Starter",
+            },
+            {
+              "@type": "Offer",
+              price: "59.00",
+              priceCurrency: "USD",
+              name: "Pro",
             },
           ],
         }),
       }}
-    ></script>
+    />
   );
 };

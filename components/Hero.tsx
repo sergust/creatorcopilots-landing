@@ -1,5 +1,3 @@
-"use client";
-
 import LandingHeroInput from './LandingHeroInput';
 
 const Hero = () => {

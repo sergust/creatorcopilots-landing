@@ -23,7 +23,7 @@ export const viewport: Viewport = {
 
 // This adds default SEO tags to all pages in our app.
 // You can override them in each page passing params to getSOTags() function.
-export const metadata = getSEOTags();
+export const metadata = getSEOTags({ canonicalUrlRelative: "/" });
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

@@ -26,6 +26,7 @@ export interface ConfigProps {
   appName: string;
   appDescription: string;
   domainName: string;
+  twitterHandle: string;
   appUrl: string;
   paymentProcessing?: "auto" | "manual";
   crisp: {

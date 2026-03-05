@@ -15,6 +15,7 @@ const config = {
     "Stop guessing why your reels underperform. AI analyzes your retention graph, pinpoints exactly where viewers drop off, and gives you the specific words to fix it.",
   // REQUIRED (no https://, not trailing slash at the end, just the naked domain)
   domainName: "creatorcopilots.com",
+  twitterHandle: "@brokkoli_borsch",
   // REQUIRED — The URL to the main application
   appUrl: "https://app.creatorcopilots.com",
   // Payment processing mode: "auto" (Lemon Squeezy) or "manual" (email notifications)
