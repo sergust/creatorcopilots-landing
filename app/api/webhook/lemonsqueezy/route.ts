@@ -462,12 +462,12 @@ export async function POST(req: NextRequest) {
         const cancelledUser = await findUserByLemonSqueezyCustomerId(customerId);
 
         if (cancelledUser) {
-          Sentry.logger.info("subscription_cancelled: Revoking access", { user_id: cancelledUser.id });
+          Sentry.logger.info("subscription_cancelled: Keeping access until period ends", { user_id: cancelledUser.id, ends_at: attributes.ends_at });
           const client = await clerkClient();
           await client.users.updateUser(cancelledUser.id, {
             publicMetadata: {
               ...cancelledUser.publicMetadata,
-              hasAccess: false,
+              hasAccess: true,
               subscriptionStatus: "cancelled",
             },
             privateMetadata: {
