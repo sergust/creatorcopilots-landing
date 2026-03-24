@@ -25,7 +25,7 @@ const faqList: FAQItemProps[] = [
     question: "How is this different from ChatGPT or other AI tools?",
     answer: (
       <div className="space-y-2 leading-relaxed">
-        ChatGPT gives generic advice. Reels Copilot syncs YOUR video with YOUR
+        ChatGPT gives generic advice. Creator Copilots syncs YOUR video with YOUR
         retention data and diagnoses YOUR specific problems. We show you the
         exact second viewers leave and explain why—not vague tips, but precise
         analysis of your content.
@@ -57,7 +57,7 @@ const faqList: FAQItemProps[] = [
     question: "Can I get a refund?",
     answer: (
       <p>
-        Yes! We offer a 7-day refund policy, no questions asked. If Reels Copilot
+        Yes! We offer a 7-day refund policy, no questions asked. If Creator Copilots
         isn&apos;t helping you understand your content better, just reach out by
         email.
       </p>

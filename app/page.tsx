@@ -26,7 +26,7 @@ const faqSchema = {
       name: "How is this different from ChatGPT or other AI tools?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "ChatGPT gives generic advice. Reels Copilot syncs YOUR video with YOUR retention data and diagnoses YOUR specific problems. We show you the exact second viewers leave and explain why—not vague tips, but precise analysis of your content.",
+        text: "ChatGPT gives generic advice. Creator Copilots syncs YOUR video with YOUR retention data and diagnoses YOUR specific problems. We show you the exact second viewers leave and explain why—not vague tips, but precise analysis of your content.",
       },
     },
     {
@@ -50,7 +50,7 @@ const faqSchema = {
       name: "Can I get a refund?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes! We offer a 7-day refund policy, no questions asked. If Reels Copilot isn't helping you understand your content better, just reach out by email.",
+        text: "Yes! We offer a 7-day refund policy, no questions asked. If Creator Copilots isn't helping you understand your content better, just reach out by email.",
       },
     },
   ],
