@@ -9,10 +9,10 @@ const themes = {
 
 const config = {
   // REQUIRED
-  appName: "Reels Copilot",
+  appName: "Creator Copilots",
   // REQUIRED: a short description of your app for SEO tags (can be overwritten)
   appDescription:
-    "Stop guessing why your reels underperform. AI analyzes your retention graph, pinpoints exactly where viewers drop off, and gives you the specific words to fix it.",
+    "Stop guessing why your Instagram Reels underperform. AI syncs your retention graph to your video, shows the exact second viewers leave, and rewrites your hook.",
   // REQUIRED (no https://, not trailing slash at the end, just the naked domain)
   domainName: "creatorcopilots.com",
   twitterHandle: "@brokkoli_borsch",
@@ -78,9 +78,9 @@ const config = {
   },
   resend: {
     // REQUIRED — Email 'From' field to be used when sending magic login links
-    fromNoReply: `Reels Copilot <noreply@creatorcopilots.com>`,
+    fromNoReply: `Creator Copilots <noreply@creatorcopilots.com>`,
     // REQUIRED — Email 'From' field to be used when sending other emails, like abandoned carts, updates etc..
-    fromAdmin: `Reels Copilot <support@creatorcopilots.com>`,
+    fromAdmin: `Creator Copilots <support@creatorcopilots.com>`,
     // Email shown to customer if they need support. Leave empty if not needed => if empty, set up Crisp above, otherwise you won't be able to offer customer support."
     supportEmail: "support@creatorcopilots.com",
   },
