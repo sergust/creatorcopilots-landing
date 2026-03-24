@@ -6,9 +6,9 @@ const Hero = () => {
       <div className="max-w-4xl mx-auto flex flex-col items-center text-center gap-8">
         {/* Main Headline */}
         <h1 className="font-extrabold text-4xl sm:text-5xl lg:text-7xl tracking-tight leading-[1.1]">
-          Go{" "}
+          See exactly where viewers drop off on your Instagram{" "}
           <span className="relative inline-block">
-            viral
+            Reels
             <svg
               className="absolute -bottom-2 left-0 w-full"
               viewBox="0 0 200 16"
@@ -24,13 +24,12 @@ const Hero = () => {
                 className="text-primary stroke-3 [stroke-dasharray:300] [stroke-dashoffset:300] animate-draw"
               />
             </svg>
-          </span>{" "}
-          with proven tools and prediction
+          </span>
         </h1>
 
         <p className="text-lg sm:text-xl text-base-content/70 leading-relaxed max-w-2xl">
-          Analyze, test, hypothesize, and use only the best mechanics with your
-          creative AI producer.
+          Upload your reel + retention screenshot. AI pinpoints the exact second
+          viewers leave and rewrites your hook.
         </p>
 
         {/* URL input replaces the Get Started button */}
